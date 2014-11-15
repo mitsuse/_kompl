@@ -17,7 +17,7 @@ func initApp() *cli.App {
 
 	app.Name = "compl"
 	app.Version = "0.0.1"
-	app.Usage = "A server for N-gram based word completion implemented in Golang."
+	app.Usage = "A server for N-gram based word completion."
 	app.Action = execute
 
 	return app
