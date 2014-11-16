@@ -41,6 +41,7 @@ func (s *Server) handler(writer http.ResponseWriter, requst *http.Request) {
 	header.Set("Content-Type", "application/json")
 
 	contextSeqJson := requst.FormValue("context")
+	prefix := requst.FormValue("prefix")
 
 	var contextSeq []string
 	if err := json.Unmarshal([]byte(contextSeqJson), &contextSeq); err != nil {
@@ -48,7 +49,7 @@ func (s *Server) handler(writer http.ResponseWriter, requst *http.Request) {
 		return
 	}
 
-	candSeq := s.Model().Predict(contextSeq, 10)
+	candSeq := s.Model().Predict(contextSeq, prefix, 10)
 
 	encoder := json.NewEncoder(writer)
 	encoder.Encode(candSeq)
