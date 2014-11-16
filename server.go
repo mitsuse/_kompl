@@ -1,5 +1,11 @@
 package compl
 
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+)
+
 type Server struct {
 	port  string
 	model *Model
@@ -24,6 +30,19 @@ func (s *Server) Model() *Model {
 }
 
 func (s *Server) Run() error {
-	// TODO: Run a compl server.
-	return nil
+	http.HandleFunc("/", s.handler)
+	address := fmt.Sprintf(":%s", s.Port())
+
+	return http.ListenAndServe(address, nil)
+}
+
+func (s *Server) handler(writer http.ResponseWriter, requst *http.Request) {
+	header := writer.Header()
+	header.Set("Content-Type", "application/json")
+
+	// TODO: Predict words.
+	candSeq := []string{}
+
+	encoder := json.NewEncoder(writer)
+	encoder.Encode(candSeq)
 }
