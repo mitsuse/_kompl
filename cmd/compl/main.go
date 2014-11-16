@@ -18,7 +18,22 @@ func initApp() *cli.App {
 	app.Name = "compl"
 	app.Version = "0.0.1"
 	app.Usage = "A server for N-gram based word completion."
+
 	app.Action = execute
+
+	app.Flags = []cli.Flag{
+		cli.StringFlag{
+			Name:  "model,m",
+			Value: "model.compl",
+			Usage: "The path of an N-gram completion model.",
+		},
+
+		cli.StringFlag{
+			Name:  "port,p",
+			Value: "8080",
+			Usage: "The port number which a compl server uses.",
+		},
+	}
 
 	return app
 }
