@@ -39,7 +39,7 @@ func initApp() *cli.App {
 }
 
 func execute(context *cli.Context) {
-	model, err := InflateModel(context.String("model"))
+	model, err := compl.InflateModel(context.String("model"))
 	if err != nil {
 		// TODO: Handle an error.
 		return
