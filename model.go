@@ -9,3 +9,10 @@ func InflateModel(filePath string) (*Model, error) {
 
 	return m, nil
 }
+
+func (m *Model) Predict(context []string, k int) []string {
+	// TODO: Predict the next word.
+	candSeq := []string{}
+
+	return candSeq
+}

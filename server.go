@@ -41,7 +41,7 @@ func (s *Server) handler(writer http.ResponseWriter, requst *http.Request) {
 	header.Set("Content-Type", "application/json")
 
 	// TODO: Predict words.
-	candSeq := []string{}
+	candSeq := s.Model().Predict(nil, 10)
 
 	encoder := json.NewEncoder(writer)
 	encoder.Encode(candSeq)
