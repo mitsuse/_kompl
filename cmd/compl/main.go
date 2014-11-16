@@ -39,8 +39,13 @@ func initApp() *cli.App {
 }
 
 func execute(context *cli.Context) {
-	s := compl.NewServer()
+	model, err := InflateModel(context.String("model"))
+	if err != nil {
+		// TODO: Handle an error.
+		return
+	}
 
+	s := compl.NewServer(context.String("port"), model)
 	if err := s.Run(); err != nil {
 		// TODO: Handle an error.
 		return
