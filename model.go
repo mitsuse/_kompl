@@ -10,6 +10,13 @@ func InflateModel(filePath string) (*Model, error) {
 	return m, nil
 }
 
+func InflateArpaModel(filePath string) (*Model, error) {
+	// TODO: Convert an ARPA-formatted model into a model.for Compl server.
+	m := &Model{}
+
+	return m, nil
+}
+
 func (m *Model) Predict(context []string, prefix string, k int) []string {
 	// TODO: Predict the next word.
 	candSeq := []string{}
