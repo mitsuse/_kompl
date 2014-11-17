@@ -47,5 +47,15 @@ func buildAction(context *cli.Context) {
 		return
 	}
 
-	_ = model
+	modelFile, err := os.Create(context.String("model"))
+	if err != nil {
+		// TODO: Handle an error.
+		return
+	}
+	defer modelFile.Close()
+
+	if err := model.Deflate(modelFile); err != nil {
+		// TODO: Handle an error.
+		return
+	}
 }
