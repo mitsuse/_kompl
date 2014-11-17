@@ -1,6 +1,8 @@
 package command
 
 import (
+	"os"
+
 	"github.com/codegangsta/cli"
 	"github.com/mitsuse/compl"
 )
@@ -32,9 +34,18 @@ func NewBuildCommand() cli.Command {
 
 func buildAction(context *cli.Context) {
 	// TODO: Convert an ARPA file into binary formatted model.
-	model, err := compl.InflateArpaModel(context.String("arpa"))
+	arpaFile, err := os.Open(context.String("arpa"))
 	if err != nil {
 		// TODO: Handle an error.
 		return
 	}
+	defer arpaFile.Close()
+
+	model, err := compl.InflateArpaModel(arpaFile)
+	if err != nil {
+		// TODO: Handle an error.
+		return
+	}
+
+	_ = model
 }

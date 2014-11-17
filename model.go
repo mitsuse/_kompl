@@ -1,16 +1,20 @@
 package compl
 
+import (
+	"io"
+)
+
 type Model struct {
 }
 
-func InflateModel(filePath string) (*Model, error) {
+func InflateModel(reader io.Reader) (*Model, error) {
 	// TODO: Deserialize a completion model from file.
 	m := &Model{}
 
 	return m, nil
 }
 
-func InflateArpaModel(filePath string) (*Model, error) {
+func InflateArpaModel(reader io.Reader) (*Model, error) {
 	// TODO: Convert an ARPA-formatted model into a model.for Compl server.
 	m := &Model{}
 

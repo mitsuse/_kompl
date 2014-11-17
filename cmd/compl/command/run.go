@@ -1,6 +1,8 @@
 package command
 
 import (
+	"os"
+
 	"github.com/codegangsta/cli"
 	"github.com/mitsuse/compl"
 )
@@ -32,7 +34,14 @@ func NewRunCommand() cli.Command {
 
 func runAction(context *cli.Context) {
 	// TODO: Start a seal server.
-	model, err := compl.InflateModel(context.String("model"))
+	modelFile, err := os.Open(context.String("model"))
+	if err != nil {
+		// TODO: Handle an error.
+		return
+	}
+	defer modelFile.Close()
+
+	model, err := compl.InflateModel(modelFile)
 	if err != nil {
 		// TODO: Handle an error.
 		return
