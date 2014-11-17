@@ -21,6 +21,7 @@ func initApp() *cli.App {
 
 	app.Commands = []cli.Command{
 		command.NewRunCommand(),
+		command.NewBuildCommand(),
 	}
 
 	return app
