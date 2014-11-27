@@ -34,14 +34,14 @@ func NewBuildCommand() cli.Command {
 
 func buildAction(context *cli.Context) {
 	// TODO: Convert a raw count file into binary formatted model.
-	arpaFile, err := os.Open(context.String("arpa"))
+	rawFile, err := os.Open(context.String("raw"))
 	if err != nil {
 		// TODO: Handle an error.
 		return
 	}
-	defer arpaFile.Close()
+	defer rawFile.Close()
 
-	model, err := compl.InflateRawModel(arpaFile)
+	model, err := compl.InflateRawModel(rawFile)
 	if err != nil {
 		// TODO: Handle an error.
 		return
