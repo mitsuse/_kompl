@@ -24,7 +24,7 @@ func NewBuildCommand() cli.Command {
 			cli.StringFlag{
 				Name:  "arpa,a",
 				Value: "model.arpa",
-				Usage: "The input path of an ARPA-formatted N-gram model.",
+				Usage: "The input path of a raw count file.",
 			},
 		},
 	}
@@ -33,7 +33,7 @@ func NewBuildCommand() cli.Command {
 }
 
 func buildAction(context *cli.Context) {
-	// TODO: Convert an ARPA file into binary formatted model.
+	// TODO: Convert a raw count file into binary formatted model.
 	arpaFile, err := os.Open(context.String("arpa"))
 	if err != nil {
 		// TODO: Handle an error.
@@ -41,7 +41,7 @@ func buildAction(context *cli.Context) {
 	}
 	defer arpaFile.Close()
 
-	model, err := compl.InflateArpaModel(arpaFile)
+	model, err := compl.InflateRawModel(arpaFile)
 	if err != nil {
 		// TODO: Handle an error.
 		return

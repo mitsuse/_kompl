@@ -14,8 +14,8 @@ func InflateModel(reader io.Reader) (*Model, error) {
 	return m, nil
 }
 
-func InflateArpaModel(reader io.Reader) (*Model, error) {
-	// TODO: Convert an ARPA-formatted model into a model.for Compl server.
+func InflateRawModel(reader io.Reader) (*Model, error) {
+	// TODO: Convert a raw count file into a model for Compl server.
 	m := &Model{}
 
 	return m, nil
