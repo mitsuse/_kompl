@@ -6,6 +6,8 @@ import (
 	"io"
 	"strconv"
 	"strings"
+
+	"github.com/mitsuse/compl/trie"
 )
 
 type Model struct {
@@ -20,6 +22,10 @@ func InflateModel(reader io.Reader) (*Model, error) {
 
 func InflateRawModel(reader io.Reader) (*Model, error) {
 	// TODO: Convert a raw count file into a model for Compl server.
+	lastId := 0
+	wordTrie := trie.New()
+	ngramTrie := trie.New()
+
 	scanner := bufio.NewScanner(reader)
 
 	for scanner.Scan() {
@@ -39,9 +45,30 @@ func InflateRawModel(reader io.Reader) (*Model, error) {
 			return nil, err
 		}
 
-		_ = wordSeq
-		_ = count
+		key := []int32{}
+
+		// Encode only context words with "wordTrie".
+		for i := 0; i < len(wordSeq)-1; i++ {
+			charSeq := []int32(wordSeq[i])
+			if node, exist := wordTrie.Add(charSeq); !exist {
+				lastId++
+				node.Value = lastId
+			}
+
+			key = append(key, charSeq...)
+		}
+
+		charSeq := []int32(wordSeq[len(wordSeq)-1])
+		key = append(key, charSeq...)
+
+		node, exist := ngramTrie.Add(key)
+		if !exist {
+			node.Value = count
+		}
 	}
+
+	_ = wordTrie
+	_ = ngramTrie
 
 	if err := scanner.Err(); err != nil {
 		return nil, err
