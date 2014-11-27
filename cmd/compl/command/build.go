@@ -22,8 +22,8 @@ func NewBuildCommand() cli.Command {
 			},
 
 			cli.StringFlag{
-				Name:  "arpa,a",
-				Value: "model.arpa",
+				Name:  "raw,r",
+				Value: "model.rcompl",
 				Usage: "The input path of a raw count file.",
 			},
 		},
