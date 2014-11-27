@@ -6,9 +6,14 @@ import (
 	"io"
 	"strconv"
 	"strings"
+
+	"github.com/mitsuse/compl/trie"
 )
 
 type Model struct {
+	wordSize  int
+	wordTrie  *trie.Trie
+	ngramTrie *trie.Trie
 }
 
 func InflateModel(reader io.Reader) (*Model, error) {
@@ -20,36 +25,82 @@ func InflateModel(reader io.Reader) (*Model, error) {
 
 func InflateRawModel(reader io.Reader) (*Model, error) {
 	// TODO: Convert a raw count file into a model for Compl server.
+	m := &Model{
+		wordSize:  0,
+		wordTrie:  trie.New(),
+		ngramTrie: trie.New(),
+	}
+
+	if err := m.inflateRaw(reader); err != nil {
+		return nil, err
+	}
+
+	return m, nil
+}
+
+func (m *Model) inflateRaw(reader io.Reader) error {
 	scanner := bufio.NewScanner(reader)
 
 	for scanner.Scan() {
 		text := scanner.Text()
 
-		textSplit := strings.Split(text, "\t")
-		if len(textSplit) != 2 {
-			// TODO: Write the error message.
-			return nil, errors.New("")
-		}
-
-		ngram := textSplit[0]
-		wordSeq := strings.Split(ngram, " ")
-
-		count, err := strconv.Atoi(textSplit[1])
+		wordSeq, count, err := m.processRawLine(text)
 		if err != nil {
-			return nil, err
+			return err
 		}
 
-		_ = wordSeq
-		_ = count
+		key := m.encodeNew(wordSeq)
+
+		node, exist := m.ngramTrie.Add(key)
+		if !exist {
+			node.Value = count
+		}
 	}
 
 	if err := scanner.Err(); err != nil {
-		return nil, err
+		return err
 	}
 
-	m := &Model{}
+	return nil
+}
 
-	return m, nil
+func (m *Model) processRawLine(text string) (wordSeq []string, count int, err error) {
+	textSplit := strings.Split(text, "\t")
+	if len(textSplit) != 2 {
+		// TODO: Write the error message.
+		err = errors.New("")
+		return
+	}
+
+	ngram := textSplit[0]
+	wordSeq = strings.Split(ngram, " ")
+
+	count, err = strconv.Atoi(textSplit[1])
+	if err != nil {
+		return
+	}
+
+	return
+}
+
+func (m *Model) encodeNew(wordSeq []string) (encodedSeq []int32) {
+	encodedSeq = []int32{}
+
+	// Encode only context words with "wordTrie".
+	for i := 0; i < len(wordSeq)-1; i++ {
+		charSeq := []int32(wordSeq[i])
+		if node, exist := m.wordTrie.Add(charSeq); !exist {
+			m.wordSize++
+			node.Value = m.wordSize
+		}
+
+		encodedSeq = append(encodedSeq, charSeq...)
+	}
+
+	charSeq := []int32(wordSeq[len(wordSeq)-1])
+	encodedSeq = append(encodedSeq, charSeq...)
+
+	return
 }
 
 func (m *Model) Deflate(writer io.Writer) error {
