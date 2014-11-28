@@ -44,6 +44,23 @@ func (t *Trie) Add(key []int32) (node *Trie, found bool) {
 	return node, found
 }
 
+func (t *Trie) FindMax(f func(x, y int) bool) *Trie {
+	var maxChild *Trie = nil
+
+	for _, child := range t.childSeq {
+		if maxChild == nil {
+			maxChild = child
+			continue
+		}
+
+		if f(maxChild.Value, child.Value) {
+			maxChild = child
+		}
+	}
+
+	return maxChild
+}
+
 func (t *Trie) find(key []int32) (node *Trie, read int) {
 	node = t
 
