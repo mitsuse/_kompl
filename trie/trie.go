@@ -66,3 +66,8 @@ func (t *Trie) find(key []int32) (node *Trie, read int) {
 
 	return node, len(key)
 }
+
+func (t *Trie) Iter() (iter *TrieIter) {
+	// TODO: Implement this.
+	return nil
+}
