@@ -14,6 +14,7 @@ type Model struct {
 	wordSize  int
 	wordTrie  *trie.Trie
 	ngramTrie *trie.Trie
+	valueSeq  []*Value
 }
 
 func InflateModel(reader io.Reader) (*Model, error) {
@@ -53,11 +54,21 @@ func (m *Model) inflateRaw(reader io.Reader) error {
 
 		node, exist := m.ngramTrie.Add(key)
 		if !exist {
-			node.Value = count
+			value := &Value{
+				Count:    count,
+				MaxCount: 0,
+			}
+
+			node.Value = len(m.valueSeq)
+			m.valueSeq = append(m.valueSeq, value)
 		}
 	}
 
 	if err := scanner.Err(); err != nil {
+		return err
+	}
+
+	if err := m.fillMaxScore(); err != nil {
 		return err
 	}
 
@@ -103,6 +114,24 @@ func (m *Model) encodeNew(wordSeq []string) (encodedSeq []int32) {
 	return
 }
 
+func (m *Model) fillMaxScore() error {
+	iter := m.ngramTrie.Iter()
+	for iter.HasNext() {
+		_, node := iter.Get()
+
+		maxChild := node.FindMax(func(x, y int) bool {
+			return m.valueSeq[x].Count-m.valueSeq[y].Count < 0
+		})
+		m.valueSeq[node.Value].MaxCount = m.valueSeq[maxChild.Value].Count
+	}
+
+	if err := iter.Error(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (m *Model) Deflate(writer io.Writer) error {
 	// TODO: Write this model into writer.
 	return nil
@@ -113,4 +142,9 @@ func (m *Model) Predict(context []string, prefix string, k int) []string {
 	candSeq := []string{}
 
 	return candSeq
+}
+
+type Value struct {
+	Count    int
+	MaxCount int
 }
