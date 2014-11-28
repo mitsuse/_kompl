@@ -14,6 +14,7 @@ type Model struct {
 	wordSize  int
 	wordTrie  *trie.Trie
 	ngramTrie *trie.Trie
+	valueSeq  []*Value
 }
 
 func InflateModel(reader io.Reader) (*Model, error) {
@@ -53,7 +54,13 @@ func (m *Model) inflateRaw(reader io.Reader) error {
 
 		node, exist := m.ngramTrie.Add(key)
 		if !exist {
-			node.Value = count
+			value := &Value{
+				Count:    count,
+				MaxCount: 0,
+			}
+
+			node.Value = len(m.valueSeq)
+			m.valueSeq = append(m.valueSeq, value)
 		}
 	}
 
@@ -113,4 +120,9 @@ func (m *Model) Predict(context []string, prefix string, k int) []string {
 	candSeq := []string{}
 
 	return candSeq
+}
+
+type Value struct {
+	Count    int
+	MaxCount int
 }
