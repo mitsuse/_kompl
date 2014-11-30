@@ -59,8 +59,8 @@ func (m *Model) inflateRaw(reader io.Reader) error {
 				MaxCount: 0,
 			}
 
-			node.Value = len(m.valueSeq)
 			m.valueSeq = append(m.valueSeq, value)
+			node.Value = len(m.valueSeq)
 		}
 	}
 
