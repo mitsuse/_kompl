@@ -1,16 +1,38 @@
 package trie
 
 type TrieIter struct {
+	nodeSeq   []*Trie
+	offsetSeq []int
+	node      *Trie
 }
 
 func (iter *TrieIter) HasNext() bool {
-	// TODO: Implement this.
-	return false
+	if len(iter.nodeSeq) <= 0 {
+		return false
+	}
+
+	for {
+		node := iter.nodeSeq[len(iter.nodeSeq)-1]
+
+		iter.offsetSeq[len(iter.offsetSeq)-1]++
+		offset := iter.offsetSeq[len(iter.offsetSeq)-1]
+
+		if offset < node.childSeq.Len() {
+			iter.nodeSeq = append(iter.nodeSeq, node.childSeq[offset])
+			iter.offsetSeq = append(iter.offsetSeq, offset)
+		} else {
+			iter.node = node
+			iter.nodeSeq = iter.nodeSeq[:len(iter.nodeSeq)-1]
+			iter.offsetSeq = iter.offsetSeq[:len(iter.offsetSeq)-1]
+			break
+		}
+	}
+
+	return true
 }
 
-func (iter *TrieIter) Get() ([]int32, *Trie) {
-	// TODO: Implement this.
-	return nil, nil
+func (iter *TrieIter) Get() *Trie {
+	return iter.node
 }
 
 func (iter *TrieIter) Error() error {

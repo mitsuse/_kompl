@@ -117,16 +117,12 @@ func (m *Model) encodeNew(wordSeq []string) (encodedSeq []int32) {
 func (m *Model) fillMaxScore() error {
 	iter := m.ngramTrie.Iter()
 	for iter.HasNext() {
-		_, node := iter.Get()
+		node := iter.Get()
 
 		maxChild := node.FindMax(func(x, y int) bool {
 			return m.valueSeq[x].Count-m.valueSeq[y].Count < 0
 		})
 		m.valueSeq[node.Value].MaxCount = m.valueSeq[maxChild.Value].Count
-	}
-
-	if err := iter.Error(); err != nil {
-		return err
 	}
 
 	return nil
