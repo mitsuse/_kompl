@@ -68,9 +68,7 @@ func (m *Model) inflateRaw(reader io.Reader) error {
 		return err
 	}
 
-	if err := m.fillMaxScore(); err != nil {
-		return err
-	}
+	m.fillMaxScore()
 
 	return nil
 }
@@ -114,18 +112,30 @@ func (m *Model) encodeNew(wordSeq []string) (encodedSeq []int32) {
 	return
 }
 
-func (m *Model) fillMaxScore() error {
+func (m *Model) fillMaxScore() {
 	iter := m.ngramTrie.Iter()
 	for iter.HasNext() {
 		node := iter.Get()
+		if node.Value == 0 {
+			value := &Value{
+				Count:    0,
+				MaxCount: 0,
+			}
+
+			m.valueSeq = append(m.valueSeq, value)
+			node.Value = len(m.valueSeq)
+		}
 
 		maxChild := node.FindMax(func(x, y int) bool {
 			return m.valueSeq[x].Count-m.valueSeq[y].Count < 0
 		})
-		m.valueSeq[node.Value].MaxCount = m.valueSeq[maxChild.Value].Count
-	}
 
-	return nil
+		if maxChild == nil {
+			m.valueSeq[node.Value-1].MaxCount = m.valueSeq[node.Value-1].Count
+		} else {
+			m.valueSeq[node.Value-1].MaxCount = m.valueSeq[maxChild.Value-1].Count
+		}
+	}
 }
 
 func (m *Model) Deflate(writer io.Writer) error {
