@@ -19,7 +19,7 @@ func (iter *TrieIter) HasNext() bool {
 
 		if offset < node.childSeq.Len() {
 			iter.nodeSeq = append(iter.nodeSeq, node.childSeq[offset])
-			iter.offsetSeq = append(iter.offsetSeq, offset)
+			iter.offsetSeq = append(iter.offsetSeq, -1)
 		} else {
 			iter.node = node
 			iter.nodeSeq = iter.nodeSeq[:len(iter.nodeSeq)-1]
