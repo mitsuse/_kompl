@@ -84,7 +84,11 @@ func (t *Trie) find(key []int32) (node *Trie, read int) {
 	return node, len(key)
 }
 
-func (t *Trie) Iter() (iter *TrieIter) {
-	// TODO: Implement this.
-	return nil
+func (t *Trie) Iter() *TrieIter {
+	iter := &TrieIter{
+		nodeSeq:   []*Trie{t},
+		offsetSeq: []int{-1},
+	}
+
+	return iter
 }
