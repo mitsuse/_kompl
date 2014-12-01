@@ -1,6 +1,9 @@
 package trie
 
-import "sort"
+import (
+	"io"
+	"sort"
+)
 
 type Trie struct {
 	char     int32
@@ -16,6 +19,11 @@ func New() (t *Trie) {
 	}
 
 	return t
+}
+
+func (t *Trie) Deflate(writer io.Writer) error {
+	// TODO: Write this trie into writer.
+	return nil
 }
 
 func (t *Trie) Get(key []int32) (node *Trie, exist bool) {
