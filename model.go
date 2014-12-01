@@ -2,6 +2,7 @@ package compl
 
 import (
 	"bufio"
+	"encoding/binary"
 	"errors"
 	"io"
 	"strconv"
@@ -139,7 +140,30 @@ func (m *Model) fillMaxScore() {
 }
 
 func (m *Model) Deflate(writer io.Writer) error {
-	// TODO: Write this model into writer.
+	if err := binary.Write(writer, binary.LittleEndian, int64(m.wordSize)); err != nil {
+		return err
+	}
+
+	if err := m.wordTrie.Deflate(writer); err != nil {
+		return err
+	}
+
+	if err := m.ngramTrie.Deflate(writer); err != nil {
+		return err
+	}
+
+	for _, value := range m.valueSeq {
+		err := binary.Write(writer, binary.LittleEndian, int64(value.Count))
+		if err != nil {
+			return err
+		}
+
+		err = binary.Write(writer, binary.LittleEndian, int64(value.MaxCount))
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
