@@ -20,7 +20,53 @@ type Model struct {
 
 func InflateModel(reader io.Reader) (*Model, error) {
 	// TODO: Deserialize a completion model from file.
-	m := &Model{}
+	var wordSize int64
+
+	if err := binary.Read(reader, binary.LittleEndian, &wordSize); err != nil {
+		return nil, err
+	}
+
+	wordTrie, err := trie.Inflate(reader)
+	if err != nil {
+		return nil, err
+	}
+
+	ngramTrie, err := trie.Inflate(reader)
+	if err != nil {
+		return nil, err
+	}
+
+	var valueSeqSize int64
+	if err := binary.Read(reader, binary.LittleEndian, &valueSeqSize); err != nil {
+		return nil, err
+	}
+
+	valueSeq := make([]*Value, valueSeqSize)
+	for i := 0; i < len(valueSeq); i++ {
+		var count int64
+		var maxCount int64
+
+		if err := binary.Read(reader, binary.LittleEndian, &count); err != nil {
+			return nil, err
+		}
+
+		if err := binary.Read(reader, binary.LittleEndian, &maxCount); err != nil {
+			return nil, err
+		}
+
+		value := &Value{
+			Count:    int(count),
+			MaxCount: int(maxCount),
+		}
+		valueSeq[i] = value
+	}
+
+	m := &Model{
+		wordSize:  int(wordSize),
+		wordTrie:  wordTrie,
+		ngramTrie: ngramTrie,
+		valueSeq:  valueSeq,
+	}
 
 	return m, nil
 }
@@ -149,6 +195,11 @@ func (m *Model) Deflate(writer io.Writer) error {
 	}
 
 	if err := m.ngramTrie.Deflate(writer); err != nil {
+		return err
+	}
+
+	valueSeqSize := int64(len(m.valueSeq))
+	if err := binary.Write(writer, binary.LittleEndian, valueSeqSize); err != nil {
 		return err
 	}
 
