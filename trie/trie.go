@@ -22,6 +22,11 @@ func New() (t *Trie) {
 	return t
 }
 
+func Inflate(reader io.Reader) (*Trie, error) {
+	// TODO: Implement this.
+	return nil, nil
+}
+
 func (t *Trie) Deflate(writer io.Writer) error {
 	nodeStack := []*Trie{t}
 	offsetStack := []int{-1}
