@@ -152,6 +152,11 @@ func (m *Model) Deflate(writer io.Writer) error {
 		return err
 	}
 
+	valueSeqSize := int64(m.valueSeq)
+	if err := binary.Write(writer, binary.LittleEndian, valueSeqSize); err != nil {
+		return err
+	}
+
 	for _, value := range m.valueSeq {
 		err := binary.Write(writer, binary.LittleEndian, int64(value.Count))
 		if err != nil {
