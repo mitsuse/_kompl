@@ -16,13 +16,13 @@ func NewRunCommand() cli.Command {
 
 		Flags: []cli.Flag{
 			cli.StringFlag{
-				Name:  "model,m",
-				Value: "model.compl",
-				Usage: "The path of an N-gram completion model.",
+				Name:  "predictor,p",
+				Value: "predictor.compl",
+				Usage: "The path of a word predictor.",
 			},
 
 			cli.StringFlag{
-				Name:  "port,p",
+				Name:  "port,n",
 				Value: "8080",
 				Usage: "The port number which a compl server uses.",
 			},
@@ -34,20 +34,20 @@ func NewRunCommand() cli.Command {
 
 func runAction(context *cli.Context) {
 	// TODO: Start a seal server.
-	modelFile, err := os.Open(context.String("model"))
+	predictorFile, err := os.Open(context.String("predictor"))
 	if err != nil {
 		// TODO: Handle an error.
 		return
 	}
-	defer modelFile.Close()
+	defer predictorFile.Close()
 
-	model, err := compl.InflateModel(modelFile)
+	predictor, err := compl.InflatePredictor(predictorFile)
 	if err != nil {
 		// TODO: Handle an error.
 		return
 	}
 
-	s := compl.NewServer(context.String("port"), model)
+	s := compl.NewServer(context.String("port"), predictor)
 	if err := s.Run(); err != nil {
 		// TODO: Handle an error.
 		return
