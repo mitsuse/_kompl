@@ -11,19 +11,19 @@ func NewBuildCommand() cli.Command {
 	command := cli.Command{
 		Name:      "build",
 		ShortName: "b",
-		Usage:     "Builds a binary-formatted model for completion",
+		Usage:     "Builds a binary-formatted word predictor",
 		Action:    buildAction,
 
 		Flags: []cli.Flag{
 			cli.StringFlag{
-				Name:  "model,m",
-				Value: "model.compl",
-				Usage: "The output path of an N-gram completion model.",
+				Name:  "predictor,p",
+				Value: "predictor.compl",
+				Usage: "The output path of a word predictor.",
 			},
 
 			cli.StringFlag{
 				Name:  "raw,r",
-				Value: "model.rcompl",
+				Value: "predictor.compl",
 				Usage: "The input path of a raw count file.",
 			},
 		},
@@ -33,7 +33,7 @@ func NewBuildCommand() cli.Command {
 }
 
 func buildAction(context *cli.Context) {
-	// TODO: Convert a raw count file into binary formatted model.
+	// TODO: Convert a raw count file into binary formatted predictor.
 	rawFile, err := os.Open(context.String("raw"))
 	if err != nil {
 		// TODO: Handle an error.
@@ -41,20 +41,20 @@ func buildAction(context *cli.Context) {
 	}
 	defer rawFile.Close()
 
-	model, err := compl.InflateRawModel(rawFile)
+	predictor, err := compl.InflateRawPredictor(rawFile)
 	if err != nil {
 		// TODO: Handle an error.
 		return
 	}
 
-	modelFile, err := os.Create(context.String("model"))
+	predictorFile, err := os.Create(context.String("predictor"))
 	if err != nil {
 		// TODO: Handle an error.
 		return
 	}
-	defer modelFile.Close()
+	defer predictorFile.Close()
 
-	if err := model.Deflate(modelFile); err != nil {
+	if err := predictor.Deflate(predictorFile); err != nil {
 		// TODO: Handle an error.
 		return
 	}

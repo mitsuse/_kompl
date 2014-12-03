@@ -11,15 +11,15 @@ import (
 	"github.com/mitsuse/compl/trie"
 )
 
-type Model struct {
+type Predictor struct {
 	wordSize  int
 	wordTrie  *trie.Trie
 	ngramTrie *trie.Trie
 	valueSeq  []*Value
 }
 
-func InflateModel(reader io.Reader) (*Model, error) {
-	// TODO: Deserialize a completion model from file.
+func InflatePredictor(reader io.Reader) (*Predictor, error) {
+	// TODO: Deserialize a predictor from file.
 	var wordSize int64
 
 	if err := binary.Read(reader, binary.LittleEndian, &wordSize); err != nil {
@@ -61,53 +61,53 @@ func InflateModel(reader io.Reader) (*Model, error) {
 		valueSeq[i] = value
 	}
 
-	m := &Model{
+	p := &Predictor{
 		wordSize:  int(wordSize),
 		wordTrie:  wordTrie,
 		ngramTrie: ngramTrie,
 		valueSeq:  valueSeq,
 	}
 
-	return m, nil
+	return p, nil
 }
 
-func InflateRawModel(reader io.Reader) (*Model, error) {
-	// TODO: Convert a raw count file into a model for Compl server.
-	m := &Model{
+func InflateRawPredictor(reader io.Reader) (*Predictor, error) {
+	// TODO: Convert a raw count file into a predictor for Compl server.
+	p := &Predictor{
 		wordSize:  0,
 		wordTrie:  trie.New(),
 		ngramTrie: trie.New(),
 	}
 
-	if err := m.inflateRaw(reader); err != nil {
+	if err := p.inflateRaw(reader); err != nil {
 		return nil, err
 	}
 
-	return m, nil
+	return p, nil
 }
 
-func (m *Model) inflateRaw(reader io.Reader) error {
+func (p *Predictor) inflateRaw(reader io.Reader) error {
 	scanner := bufio.NewScanner(reader)
 
 	for scanner.Scan() {
 		text := scanner.Text()
 
-		wordSeq, count, err := m.processRawLine(text)
+		wordSeq, count, err := p.processRawLine(text)
 		if err != nil {
 			return err
 		}
 
-		key := m.encodeNew(wordSeq)
+		key := p.encodeNew(wordSeq)
 
-		node, exist := m.ngramTrie.Add(key)
+		node, exist := p.ngramTrie.Add(key)
 		if !exist {
 			value := &Value{
 				Count:    count,
 				MaxCount: 0,
 			}
 
-			m.valueSeq = append(m.valueSeq, value)
-			node.Value = len(m.valueSeq)
+			p.valueSeq = append(p.valueSeq, value)
+			node.Value = len(p.valueSeq)
 		}
 	}
 
@@ -115,12 +115,12 @@ func (m *Model) inflateRaw(reader io.Reader) error {
 		return err
 	}
 
-	m.fillMaxScore()
+	p.fillMaxScore()
 
 	return nil
 }
 
-func (m *Model) processRawLine(text string) (wordSeq []string, count int, err error) {
+func (p *Predictor) processRawLine(text string) (wordSeq []string, count int, err error) {
 	textSplit := strings.Split(text, "\t")
 	if len(textSplit) != 2 {
 		// TODO: Write the error message.
@@ -139,15 +139,15 @@ func (m *Model) processRawLine(text string) (wordSeq []string, count int, err er
 	return
 }
 
-func (m *Model) encodeNew(wordSeq []string) (encodedSeq []int32) {
+func (p *Predictor) encodeNew(wordSeq []string) (encodedSeq []int32) {
 	encodedSeq = []int32{}
 
 	// Encode only context words with "wordTrie".
 	for i := 0; i < len(wordSeq)-1; i++ {
 		charSeq := []int32(wordSeq[i])
-		if node, exist := m.wordTrie.Add(charSeq); !exist {
-			m.wordSize++
-			node.Value = m.wordSize
+		if node, exist := p.wordTrie.Add(charSeq); !exist {
+			p.wordSize++
+			node.Value = p.wordSize
 		}
 
 		encodedSeq = append(encodedSeq, charSeq...)
@@ -159,8 +159,8 @@ func (m *Model) encodeNew(wordSeq []string) (encodedSeq []int32) {
 	return
 }
 
-func (m *Model) fillMaxScore() {
-	iter := m.ngramTrie.Iter()
+func (p *Predictor) fillMaxScore() {
+	iter := p.ngramTrie.Iter()
 	for iter.HasNext() {
 		node := iter.Get()
 		if node.Value == 0 {
@@ -169,41 +169,41 @@ func (m *Model) fillMaxScore() {
 				MaxCount: 0,
 			}
 
-			m.valueSeq = append(m.valueSeq, value)
-			node.Value = len(m.valueSeq)
+			p.valueSeq = append(p.valueSeq, value)
+			node.Value = len(p.valueSeq)
 		}
 
 		maxChild := node.FindMax(func(x, y int) bool {
-			return m.valueSeq[x].Count-m.valueSeq[y].Count < 0
+			return p.valueSeq[x].Count-p.valueSeq[y].Count < 0
 		})
 
 		if maxChild == nil {
-			m.valueSeq[node.Value-1].MaxCount = m.valueSeq[node.Value-1].Count
+			p.valueSeq[node.Value-1].MaxCount = p.valueSeq[node.Value-1].Count
 		} else {
-			m.valueSeq[node.Value-1].MaxCount = m.valueSeq[maxChild.Value-1].Count
+			p.valueSeq[node.Value-1].MaxCount = p.valueSeq[maxChild.Value-1].Count
 		}
 	}
 }
 
-func (m *Model) Deflate(writer io.Writer) error {
-	if err := binary.Write(writer, binary.LittleEndian, int64(m.wordSize)); err != nil {
+func (p *Predictor) Deflate(writer io.Writer) error {
+	if err := binary.Write(writer, binary.LittleEndian, int64(p.wordSize)); err != nil {
 		return err
 	}
 
-	if err := m.wordTrie.Deflate(writer); err != nil {
+	if err := p.wordTrie.Deflate(writer); err != nil {
 		return err
 	}
 
-	if err := m.ngramTrie.Deflate(writer); err != nil {
+	if err := p.ngramTrie.Deflate(writer); err != nil {
 		return err
 	}
 
-	valueSeqSize := int64(len(m.valueSeq))
+	valueSeqSize := int64(len(p.valueSeq))
 	if err := binary.Write(writer, binary.LittleEndian, valueSeqSize); err != nil {
 		return err
 	}
 
-	for _, value := range m.valueSeq {
+	for _, value := range p.valueSeq {
 		err := binary.Write(writer, binary.LittleEndian, int64(value.Count))
 		if err != nil {
 			return err
@@ -218,7 +218,7 @@ func (m *Model) Deflate(writer io.Writer) error {
 	return nil
 }
 
-func (m *Model) Predict(context []string, prefix string, k int) []string {
+func (p *Predictor) Predict(context []string, prefix string, k int) []string {
 	// TODO: Predict the next word.
 	candSeq := []string{}
 

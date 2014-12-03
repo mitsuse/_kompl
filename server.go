@@ -7,15 +7,15 @@ import (
 )
 
 type Server struct {
-	port  string
-	model *Model
+	port      string
+	predictor *Predictor
 }
 
-func NewServer(port string, model *Model) *Server {
+func NewServer(port string, predictor *Predictor) *Server {
 	// TODO: Configure a server.
 	s := &Server{
-		port:  port,
-		model: model,
+		port:      port,
+		predictor: predictor,
 	}
 
 	return s
@@ -25,8 +25,8 @@ func (s *Server) Port() string {
 	return s.port
 }
 
-func (s *Server) Model() *Model {
-	return s.model
+func (s *Server) Predictor() *Predictor {
+	return s.predictor
 }
 
 func (s *Server) Run() error {
@@ -49,7 +49,7 @@ func (s *Server) handler(writer http.ResponseWriter, requst *http.Request) {
 		return
 	}
 
-	candSeq := s.Model().Predict(contextSeq, prefix, 10)
+	candSeq := s.Predictor().Predict(contextSeq, prefix, 10)
 
 	encoder := json.NewEncoder(writer)
 	encoder.Encode(candSeq)
