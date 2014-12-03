@@ -223,10 +223,7 @@ func (p *Predictor) Deflate(writer io.Writer) error {
 func (p *Predictor) Predict(context []string, prefix string, k int) []string {
 	candSeq := []string{}
 
-	contextKey, exist := p.encodeContext(context)
-	if !exist {
-		return candSeq
-	}
+	contextKey := p.encode(context, prefix)
 
 	prefixNode, exist := p.ngramTrie.Get(contextKey)
 	if !exist {
@@ -239,19 +236,23 @@ func (p *Predictor) Predict(context []string, prefix string, k int) []string {
 	return candSeq
 }
 
-func (p *Predictor) encodeContext(context []string) (contextKey []int32, exist bool) {
-	contextKey = make([]int32, 0, len(context))
+func (p *Predictor) encode(context []string, prefix string) []int32 {
+	key := make([]int32, 0, len(context)+len(prefix))
 
 	for _, word := range context {
 		node, exist := p.wordTrie.Get([]int32(word))
 		if !exist {
-			return nil, false
+			key = append(key, 0)
+		} else {
+			key = append(key, int32(node.Value))
 		}
-
-		contextKey = append(contextKey, int32(node.Value))
 	}
 
-	return contextKey, true
+	for _, char := range []int32(prefix) {
+		key = append(key, char)
+	}
+
+	return key
 }
 
 type Value struct {
