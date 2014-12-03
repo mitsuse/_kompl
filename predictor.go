@@ -145,12 +145,14 @@ func (p *Predictor) encodeNew(wordSeq []string) (encodedSeq []int32) {
 	// Encode only context words with "wordTrie".
 	for i := 0; i < len(wordSeq)-1; i++ {
 		charSeq := []int32(wordSeq[i])
-		if node, exist := p.wordTrie.Add(charSeq); !exist {
+
+		node, exist := p.wordTrie.Add(charSeq)
+		if !exist {
 			p.wordSize++
 			node.Value = p.wordSize
 		}
 
-		encodedSeq = append(encodedSeq, charSeq...)
+		encodedSeq = append(encodedSeq, int32(node.Value))
 	}
 
 	charSeq := []int32(wordSeq[len(wordSeq)-1])
