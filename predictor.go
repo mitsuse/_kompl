@@ -230,10 +230,7 @@ func (p *Predictor) Predict(context []string, prefix string, k int) []string {
 		return candSeq
 	}
 
-	// TODO: Predict the next word.
-	_ = prefixNode
-
-	return candSeq
+	return p.generateCandidates(prefixNode, k)
 }
 
 func (p *Predictor) encode(context []string, prefix string) []int32 {
@@ -253,6 +250,13 @@ func (p *Predictor) encode(context []string, prefix string) []int32 {
 	}
 
 	return key
+}
+
+func (p *Predictor) generateCandidates(prefixNode *trie.Trie, k int) []string {
+	// TODO: Implement this.
+	candidateSeq := make([]string, 0, k)
+
+	return candidateSeq
 }
 
 type Value struct {
