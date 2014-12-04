@@ -230,7 +230,7 @@ func (p *Predictor) Predict(context []string, prefix string, k int) []string {
 		return candSeq
 	}
 
-	return p.generateCandidates(prefixNode, k)
+	return p.generateCandidates(prefix, prefixNode, k)
 }
 
 func (p *Predictor) encode(context []string, prefix string) []int32 {
@@ -252,11 +252,38 @@ func (p *Predictor) encode(context []string, prefix string) []int32 {
 	return key
 }
 
-func (p *Predictor) generateCandidates(prefixNode *trie.Trie, k int) []string {
+func (p *Predictor) generateCandidates(prefix string, node *trie.Trie, k int) []string {
 	// TODO: Implement this.
 	candidateSeq := make([]string, 0, k)
 
+	queue := NewQueue()
+
+	word, node, found := p.findLocus(prefix, node)
+	if found {
+		value := p.valueSeq[node.Value]
+		candidate := NewCandidate(word, node, value.Count)
+		queue.Push(candidate)
+	}
+
+	for queue.Len() > 0 {
+		candidate, _ := queue.Pop()
+		if candidate.Node().Value != 0 {
+			candidateSeq = append(candidateSeq, candidate.Word())
+			if len(candidateSeq) == k {
+				break
+			}
+		} else {
+			// TODO: Push the first child and the next sibling of "candidate.Node()".
+			//       Nodes of "p.ngramTrie" should be sorted with the score.
+		}
+	}
+
 	return candidateSeq
+}
+
+func (p *Predictor) findLocus(prefix string, node *trie.Trie) (string, *trie.Trie, bool) {
+	// TODO: Implement this.
+	return "", node, true
 }
 
 type Value struct {
