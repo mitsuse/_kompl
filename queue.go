@@ -8,6 +8,12 @@ type Queue struct {
 	seq CandidateSeq
 }
 
+func NewQueue() *Queue {
+	q := &Queue{
+		seq: []*Candidate{},
+	}
+}
+
 func (q *Queue) Push(candidate *Candidate) {
 	q.seq = append(q.seq, candidate)
 	sort.Sort(q.seq)
