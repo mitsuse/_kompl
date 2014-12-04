@@ -14,6 +14,10 @@ func NewQueue() *Queue {
 	}
 }
 
+func (q *Queue) Len() int {
+	return len(q.seq)
+}
+
 func (q *Queue) Push(candidate *Candidate) {
 	q.seq = append(q.seq, candidate)
 	sort.Sort(q.seq)
