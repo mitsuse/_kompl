@@ -12,6 +12,8 @@ func NewQueue() *Queue {
 	q := &Queue{
 		seq: []*Candidate{},
 	}
+
+	return q
 }
 
 func (q *Queue) Len() int {
@@ -31,7 +33,7 @@ func (q *Queue) Pop() (*Candidate, bool) {
 	offset := len(q.seq) - 1
 
 	candidate := q.seq[offset]
-	q.seq = q.seq[offset]
+	q.seq = q.seq[:offset]
 
 	return candidate, true
 }
