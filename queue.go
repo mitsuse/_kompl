@@ -23,7 +23,7 @@ func (q *Queue) Push(candidate *Candidate) {
 	sort.Sort(q.seq)
 }
 
-func (q *Queue) Pop() (*Queue, bool) {
+func (q *Queue) Pop() (*Candidate, bool) {
 	if len(q.seq) == 0 {
 		return nil, false
 	}
