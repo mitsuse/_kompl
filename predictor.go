@@ -256,7 +256,34 @@ func (p *Predictor) generateCandidates(prefixNode *trie.Trie, k int) []string {
 	// TODO: Implement this.
 	candidateSeq := make([]string, 0, k)
 
+	queue := NewQueue()
+
+	word, node, found := p.findLocus(prefixNode)
+	if found {
+		value := p.valueSeq[node.Value]
+		candidate := NewCandidate(word, node, value.Count)
+		queue.Push(candidate)
+	}
+
+	for queue.Len() > 0 {
+		candidate, _ := queue.Pop()
+		if candidate.Node().Value != 0 {
+			candSeq = append(candSeq, candidate.Word())
+			if len(candSeq) == k {
+				break
+			}
+		} else {
+			// TODO: Push the first child and the next sibling of "candidate.Node()".
+			//       Nodes of "p.ngramTrie" should be sorted with the score.
+		}
+	}
+
 	return candidateSeq
+}
+
+func (p *Predictor) findLocus(prefix string, node *trie.Trie) (string, *trie.Trie, bool) {
+	// TODO: Implement this.
+	return node
 }
 
 type Value struct {
