@@ -234,11 +234,11 @@ func (p *Predictor) fillFirstAndSibling() {
 
 		if indexedChildSeq.Len() > 0 {
 			previousChild := indexedChildSeq.seq[0]
-			p.valueSeq[node.Value].First = previousChild.Index
+			p.valueSeq[node.Value-1].First = previousChild.Index
 
 			for offset := 1; offset < indexedChildSeq.Len(); offset++ {
 				indexedChild := indexedChildSeq.seq[offset]
-				p.valueSeq[previousChild.Node.Value].Sibling = indexedChild.Index
+				p.valueSeq[previousChild.Node.Value-1].Sibling = indexedChild.Index
 
 				previousChild = indexedChild
 			}
