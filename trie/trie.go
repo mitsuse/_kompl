@@ -205,3 +205,9 @@ func (t *Trie) Iter() *TrieIter {
 
 	return iter
 }
+
+func (t *Trie) ChildIter() *NodeIter {
+	iter := &NodeIter{}
+
+	return iter
+}

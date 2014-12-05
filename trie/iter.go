@@ -39,3 +39,16 @@ func (iter *TrieIter) Error() error {
 	// TODO: Implement this.
 	return nil
 }
+
+type NodeIter struct {
+}
+
+func (iter *NodeIter) HasNext() bool {
+	// TODO: Implement this.
+	return false
+}
+
+func (iter *NodeIter) Get() *Trie {
+	// TODO: Implement this.
+	return nil
+}
