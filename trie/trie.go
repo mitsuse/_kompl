@@ -197,6 +197,14 @@ func (t *Trie) find(key []int32) (node *Trie, read int) {
 	return node, len(key)
 }
 
+func (t *Trie) GetChildByOffset(offset int) (node *Trie, exist bool) {
+	if offset < 0 || len(t.childSeq) <= offset {
+		return nil, false
+	}
+
+	return node.childSeq[offset], true
+}
+
 func (t *Trie) Iter() *TrieIter {
 	iter := &TrieIter{
 		nodeSeq:   []*Trie{t},
