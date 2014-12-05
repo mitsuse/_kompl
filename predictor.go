@@ -202,7 +202,6 @@ func (p *Predictor) fillMaxScore() {
 }
 
 func (p *Predictor) fillFirstAndSibling() {
-	// TODO: Implement this.
 	nodeStack := []*trie.Trie{p.ngramTrie}
 
 	for len(nodeStack) > 0 {
