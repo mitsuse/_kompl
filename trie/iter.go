@@ -39,3 +39,18 @@ func (iter *TrieIter) Error() error {
 	// TODO: Implement this.
 	return nil
 }
+
+type NodeIter struct {
+	nodeSeq []*Trie
+	offset  int
+}
+
+func (iter *NodeIter) HasNext() bool {
+	iter.offset++
+
+	return iter.offset < len(iter.nodeSeq)
+}
+
+func (iter *NodeIter) Get() *Trie {
+	return iter.nodeSeq[iter.offset]
+}

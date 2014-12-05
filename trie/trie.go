@@ -205,3 +205,12 @@ func (t *Trie) Iter() *TrieIter {
 
 	return iter
 }
+
+func (t *Trie) ChildIter() *NodeIter {
+	iter := &NodeIter{
+		nodeSeq: t.childSeq,
+		offset:  -1,
+	}
+
+	return iter
+}
