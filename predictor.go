@@ -45,6 +45,8 @@ func InflatePredictor(reader io.Reader) (*Predictor, error) {
 	for i := 0; i < len(valueSeq); i++ {
 		var count int64
 		var maxCount int64
+		var first int64
+		var sibling int64
 
 		if err := binary.Read(reader, binary.LittleEndian, &count); err != nil {
 			return nil, err
@@ -54,9 +56,19 @@ func InflatePredictor(reader io.Reader) (*Predictor, error) {
 			return nil, err
 		}
 
+		if err := binary.Read(reader, binary.LittleEndian, &first); err != nil {
+			return nil, err
+		}
+
+		if err := binary.Read(reader, binary.LittleEndian, &sibling); err != nil {
+			return nil, err
+		}
+
 		value := &Value{
 			Count:    int(count),
 			MaxCount: int(maxCount),
+			First:    int(first),
+			Sibling:  int(maxCount),
 		}
 		valueSeq[i] = value
 	}
@@ -212,6 +224,16 @@ func (p *Predictor) Deflate(writer io.Writer) error {
 		}
 
 		err = binary.Write(writer, binary.LittleEndian, int64(value.MaxCount))
+		if err != nil {
+			return err
+		}
+
+		err = binary.Write(writer, binary.LittleEndian, int64(value.First))
+		if err != nil {
+			return err
+		}
+
+		err = binary.Write(writer, binary.LittleEndian, int64(value.Sibling))
 		if err != nil {
 			return err
 		}
