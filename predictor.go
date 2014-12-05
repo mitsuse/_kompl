@@ -117,6 +117,8 @@ func (p *Predictor) inflateRaw(reader io.Reader) error {
 			value := &Value{
 				Count:    count,
 				MaxCount: 0,
+				First:    -1,
+				Sibling:  -1,
 			}
 
 			p.valueSeq = append(p.valueSeq, value)
@@ -183,6 +185,8 @@ func (p *Predictor) fillMaxScore() {
 			value := &Value{
 				Count:    0,
 				MaxCount: 0,
+				First:    -1,
+				Sibling:  -1,
 			}
 
 			p.valueSeq = append(p.valueSeq, value)
