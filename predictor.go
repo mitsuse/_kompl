@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"io"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -202,6 +203,47 @@ func (p *Predictor) fillMaxScore() {
 
 func (p *Predictor) fillFirstAndSibling() {
 	// TODO: Implement this.
+	nodeStack := []*trie.Trie{p.ngramTrie}
+
+	for len(nodeStack) > 0 {
+		node := nodeStack[len(nodeStack)-1]
+		nodeStack = nodeStack[:len(nodeStack)-1]
+
+		indexedChildSeq := &IndexedNodeSeq{
+			seq:      []*IndexedNode{},
+			valueSeq: p.valueSeq,
+		}
+
+		iter := node.ChildIter()
+		offset := 0
+
+		for iter.HasNext() {
+			child := iter.Get()
+			nodeStack = append(nodeStack, child)
+
+			indexedChild := &IndexedNode{
+				Node:  child,
+				Index: offset,
+			}
+			indexedChildSeq.seq = append(indexedChildSeq.seq, indexedChild)
+
+			offset++
+		}
+
+		sort.Sort(indexedChildSeq)
+
+		if indexedChildSeq.Len() > 0 {
+			previousChild := indexedChildSeq.seq[0]
+			p.valueSeq[node.Value].First = previousChild.Index
+
+			for offset := 1; offset < indexedChildSeq.Len(); offset++ {
+				indexedChild := indexedChildSeq.seq[offset]
+				p.valueSeq[previousChild.Node.Value].Sibling = indexedChild.Index
+
+				previousChild = indexedChild
+			}
+		}
+	}
 }
 
 func (p *Predictor) Deflate(writer io.Writer) error {
@@ -280,7 +322,6 @@ func (p *Predictor) encode(context []string, prefix string) []int32 {
 }
 
 func (p *Predictor) generateCandidates(prefix string, node *trie.Trie, k int) []string {
-	// TODO: Implement this.
 	candidateSeq := make([]string, 0, k)
 
 	queue := NewQueue()
@@ -318,4 +359,29 @@ type Value struct {
 	MaxCount int
 	First    int
 	Sibling  int
+}
+
+type IndexedNode struct {
+	Node  *trie.Trie
+	Index int
+}
+
+type IndexedNodeSeq struct {
+	seq      []*IndexedNode
+	valueSeq []*Value
+}
+
+func (s *IndexedNodeSeq) Len() int {
+	return len(s.seq)
+}
+
+func (s *IndexedNodeSeq) Less(i, j int) bool {
+	iCount := s.valueSeq[s.seq[i].Node.Value].Count
+	jCount := s.valueSeq[s.seq[j].Node.Value].Count
+
+	return iCount < jCount
+}
+
+func (s *IndexedNodeSeq) Swap(i, j int) {
+	s.seq[i], s.seq[j] = s.seq[j], s.seq[i]
 }
