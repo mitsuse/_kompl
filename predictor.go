@@ -289,4 +289,6 @@ func (p *Predictor) findLocus(prefix string, node *trie.Trie) (string, *trie.Tri
 type Value struct {
 	Count    int
 	MaxCount int
+	First    int
+	Sibling  int
 }
