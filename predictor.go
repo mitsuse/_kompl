@@ -128,6 +128,7 @@ func (p *Predictor) inflateRaw(reader io.Reader) error {
 	}
 
 	p.fillMaxScore()
+	p.fillFirstAndSibling()
 
 	return nil
 }
@@ -197,6 +198,10 @@ func (p *Predictor) fillMaxScore() {
 			p.valueSeq[node.Value-1].MaxCount = p.valueSeq[maxChild.Value-1].Count
 		}
 	}
+}
+
+func (p *Predictor) fillFirstAndSibling() {
+	// TODO: Implement this.
 }
 
 func (p *Predictor) Deflate(writer io.Writer) error {
