@@ -69,7 +69,7 @@ func InflatePredictor(reader io.Reader) (*Predictor, error) {
 			Count:    int(count),
 			MaxCount: int(maxCount),
 			First:    int(first),
-			Sibling:  int(maxCount),
+			Sibling:  int(sibling),
 		}
 		valueSeq[i] = value
 	}
