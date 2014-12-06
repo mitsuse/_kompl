@@ -378,6 +378,10 @@ func (p *Predictor) getFirst(candidate *Candidate) (*Candidate, bool) {
 func (p *Predictor) getSibgling(candidate *Candidate) (*Candidate, bool) {
 	nodeValue := p.valueSeq[candidate.node.Value-1]
 
+	if candidate.parent == nil {
+		return nil, false
+	}
+
 	siblingNode, exist := candidate.parent.GetChildByOffset(nodeValue.Sibling)
 	if !exist {
 		return nil, false
