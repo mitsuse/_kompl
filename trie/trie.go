@@ -131,6 +131,10 @@ func (t *Trie) deflateNode(writer io.Writer) error {
 	return nil
 }
 
+func (t *Trie) Char() int32 {
+	return t.char
+}
+
 func (t *Trie) Get(key []int32) (node *Trie, exist bool) {
 	node, read := t.find(key)
 
@@ -202,7 +206,7 @@ func (t *Trie) GetChildByOffset(offset int) (node *Trie, exist bool) {
 		return nil, false
 	}
 
-	return node.childSeq[offset], true
+	return t.childSeq[offset], true
 }
 
 func (t *Trie) Iter() *TrieIter {
