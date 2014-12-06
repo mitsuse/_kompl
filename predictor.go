@@ -329,12 +329,9 @@ func (p *Predictor) generateCandidates(prefix string, node *trie.Trie, k int) []
 
 	queue := NewQueue()
 
-	word, node, found := p.findLocus(prefix, node)
-	if found {
-		value := p.valueSeq[node.Value]
-		candidate := NewCandidate(word, node, value.Count)
-		queue.Push(candidate)
-	}
+	value := p.valueSeq[node.Value]
+	candidate := NewCandidate(prefix, node, value.Count)
+	queue.Push(candidate)
 
 	for queue.Len() > 0 {
 		candidate, _ := queue.Pop()
@@ -350,11 +347,6 @@ func (p *Predictor) generateCandidates(prefix string, node *trie.Trie, k int) []
 	}
 
 	return candidateSeq
-}
-
-func (p *Predictor) findLocus(prefix string, node *trie.Trie) (string, *trie.Trie, bool) {
-	// TODO: Implement this.
-	return "", node, true
 }
 
 type Value struct {
