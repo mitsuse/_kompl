@@ -206,7 +206,7 @@ func (t *Trie) GetChildByOffset(offset int) (node *Trie, exist bool) {
 		return nil, false
 	}
 
-	return node.childSeq[offset], true
+	return t.childSeq[offset], true
 }
 
 func (t *Trie) Iter() *TrieIter {
