@@ -387,8 +387,10 @@ func (p *Predictor) getSibgling(candidate *Candidate) (*Candidate, bool) {
 		return nil, false
 	}
 
+	nodeWord := []int32(candidate.word)
+
 	siblingValue := p.valueSeq[siblingNode.Value-1]
-	siblingWord := string(append([]int32(candidate.word), siblingNode.Char()))
+	siblingWord := string(append(nodeWord[:len(nodeWord)-1], siblingNode.Char()))
 
 	siblingCandidate := NewCandidate(
 		siblingWord,
