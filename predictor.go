@@ -335,7 +335,9 @@ func (p *Predictor) generateCandidates(prefix string, node *trie.Trie, k int) []
 
 	for queue.Len() > 0 {
 		candidate, _ := queue.Pop()
-		if candidate.Node().Value != 0 {
+
+		candidateValue := p.valueSeq[candidate.Node().Value-1]
+		if candidateValue.Count > 0 {
 			candidateSeq = append(candidateSeq, candidate.Word())
 			if len(candidateSeq) == k {
 				break
