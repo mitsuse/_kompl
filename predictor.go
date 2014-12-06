@@ -424,8 +424,8 @@ func (s *IndexedNodeSeq) Len() int {
 }
 
 func (s *IndexedNodeSeq) Less(i, j int) bool {
-	iCount := s.valueSeq[s.seq[i].Node.Value].Count
-	jCount := s.valueSeq[s.seq[j].Node.Value].Count
+	iCount := s.valueSeq[s.seq[i].Node.Value-1].Count
+	jCount := s.valueSeq[s.seq[j].Node.Value-1].Count
 
 	return iCount < jCount
 }
