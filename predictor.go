@@ -69,7 +69,7 @@ func InflatePredictor(reader io.Reader) (*Predictor, error) {
 			Count:    int(count),
 			MaxCount: int(maxCount),
 			First:    int(first),
-			Sibling:  int(maxCount),
+			Sibling:  int(sibling),
 		}
 		valueSeq[i] = value
 	}
@@ -335,7 +335,9 @@ func (p *Predictor) generateCandidates(prefix string, node *trie.Trie, k int) []
 
 	for queue.Len() > 0 {
 		candidate, _ := queue.Pop()
-		if candidate.Node().Value != 0 {
+
+		candidateValue := p.valueSeq[candidate.Node().Value-1]
+		if candidateValue.Count > 0 {
 			candidateSeq = append(candidateSeq, candidate.Word())
 			if len(candidateSeq) == k {
 				break
@@ -387,8 +389,10 @@ func (p *Predictor) getSibgling(candidate *Candidate) (*Candidate, bool) {
 		return nil, false
 	}
 
+	nodeWord := []int32(candidate.word)
+
 	siblingValue := p.valueSeq[siblingNode.Value-1]
-	siblingWord := string(append([]int32(candidate.word), siblingNode.Char()))
+	siblingWord := string(append(nodeWord[:len(nodeWord)-1], siblingNode.Char()))
 
 	siblingCandidate := NewCandidate(
 		siblingWord,
@@ -422,8 +426,8 @@ func (s *IndexedNodeSeq) Len() int {
 }
 
 func (s *IndexedNodeSeq) Less(i, j int) bool {
-	iCount := s.valueSeq[s.seq[i].Node.Value].Count
-	jCount := s.valueSeq[s.seq[j].Node.Value].Count
+	iCount := s.valueSeq[s.seq[i].Node.Value-1].Count
+	jCount := s.valueSeq[s.seq[j].Node.Value-1].Count
 
 	return iCount < jCount
 }
