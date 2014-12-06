@@ -335,31 +335,44 @@ func (p *Predictor) generateCandidates(prefix string, node *trie.Trie, k int) []
 
 	for queue.Len() > 0 {
 		candidate, _ := queue.Pop()
+		println("# candidate:", candidate.Word())
 		if candidate.Node().Value != 0 {
 			candidateSeq = append(candidateSeq, candidate.Word())
 			if len(candidateSeq) == k {
 				break
 			}
-		} else {
-			queue.Push(p.getFirst(candidate))
+		}
 
-			if sibling, exist := p.getSibgling(candidate); exist {
-				queue.Push(sibling)
-			}
+		if first, exist := p.getFirst(candidate); exist {
+			queue.Push(first)
+		}
+
+		if sibling, exist := p.getSibgling(candidate); exist {
+			queue.Push(sibling)
 		}
 	}
 
 	return candidateSeq
 }
 
-func (p *Predictor) getFirst(candidate *Candidate) *Candidate {
+func (p *Predictor) getFirst(candidate *Candidate) (*Candidate, bool) {
 	parentValue := p.valueSeq[candidate.node.Value-1]
 
-	childNode, _ := candidate.node.GetChildByOffset(parentValue.First)
+	childNode, exist := candidate.node.GetChildByOffset(parentValue.First)
+	if !exist {
+		return nil, false
+	}
+
 	childValue := p.valueSeq[childNode.Value-1]
 	childWord := string(append([]int32(candidate.word), childNode.Char()))
 
-	return NewCandidate(childWord, childNode, candidate.node, childValue.Count)
+	childCandidate := NewCandidate(childWord,
+		childNode,
+		candidate.node,
+		childValue.Count,
+	)
+
+	return childCandidate, true
 }
 
 func (p *Predictor) getSibgling(candidate *Candidate) (*Candidate, bool) {

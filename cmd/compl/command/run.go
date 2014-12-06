@@ -47,6 +47,12 @@ func runAction(context *cli.Context) {
 		return
 	}
 
+	candidateSeq := predictor.Predict([]string{"when", "kept"}, "a", 10)
+	for _, candidate := range candidateSeq {
+		println(candidate)
+	}
+	println("(predicted)")
+
 	s := compl.NewServer(context.String("port"), predictor)
 	if err := s.Run(); err != nil {
 		// TODO: Handle an error.
