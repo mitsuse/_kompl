@@ -5,16 +5,18 @@ import (
 )
 
 type Candidate struct {
-	word  string
-	node  *trie.Trie
-	score int
+	word   string
+	node   *trie.Trie
+	parent *trie.Trie
+	score  int
 }
 
-func NewCandidate(word string, node *trie.Trie, score int) *Candidate {
+func NewCandidate(word string, node, parent *trie.Trie, score int) *Candidate {
 	c := &Candidate{
-		word:  word,
-		node:  node,
-		score: score,
+		word:   word,
+		node:   node,
+		parent: parent,
+		score:  score,
 	}
 
 	return c
@@ -26,6 +28,10 @@ func (c *Candidate) Word() string {
 
 func (c *Candidate) Node() *trie.Trie {
 	return c.node
+}
+
+func (c *Candidate) Parent() *trie.Trie {
+	return c.parent
 }
 
 func (c *Candidate) Score() int {

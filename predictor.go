@@ -330,7 +330,7 @@ func (p *Predictor) generateCandidates(prefix string, node *trie.Trie, k int) []
 	queue := NewQueue()
 
 	value := p.valueSeq[node.Value]
-	candidate := NewCandidate(prefix, node, value.Count)
+	candidate := NewCandidate(prefix, node, nil, value.Count)
 	queue.Push(candidate)
 
 	for queue.Len() > 0 {
@@ -341,12 +341,46 @@ func (p *Predictor) generateCandidates(prefix string, node *trie.Trie, k int) []
 				break
 			}
 		} else {
-			// TODO: Push the first child and the next sibling of "candidate.Node()".
-			//       Nodes of "p.ngramTrie" should be sorted with the score.
+			queue.Push(p.getFirst(candidate))
+
+			if sibling, exist := p.getSibgling(candidate); exist {
+				queue.Push(sibling)
+			}
 		}
 	}
 
 	return candidateSeq
+}
+
+func (p *Predictor) getFirst(candidate *Candidate) *Candidate {
+	parentValue := p.valueSeq[candidate.node.Value-1]
+
+	childNode, _ := candidate.node.GetChildByOffset(parentValue.First)
+	childValue := p.valueSeq[childNode.Value-1]
+	childWord := string(append([]int32(candidate.word), childNode.Char()))
+
+	return NewCandidate(childWord, childNode, candidate.node, childValue.Count)
+}
+
+func (p *Predictor) getSibgling(candidate *Candidate) (*Candidate, bool) {
+	nodeValue := p.valueSeq[candidate.node.Value-1]
+
+	siblingNode, exist := candidate.parent.GetChildByOffset(nodeValue.Sibling)
+	if !exist {
+		return nil, false
+	}
+
+	siblingValue := p.valueSeq[siblingNode.Value-1]
+	siblingWord := string(append([]int32(candidate.word), siblingNode.Char()))
+
+	siblingCandidate := NewCandidate(
+		siblingWord,
+		siblingNode,
+		candidate.parent,
+		siblingValue.Count,
+	)
+
+	return siblingCandidate, true
 }
 
 type Value struct {
