@@ -366,7 +366,8 @@ func (p *Predictor) getFirst(candidate *Candidate) (*Candidate, bool) {
 	childValue := p.valueSeq[childNode.Value-1]
 	childWord := string(append([]int32(candidate.word), childNode.Char()))
 
-	childCandidate := NewCandidate(childWord,
+	childCandidate := NewCandidate(
+		childWord,
 		childNode,
 		candidate.node,
 		childValue.Count,
