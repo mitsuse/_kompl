@@ -1,6 +1,7 @@
 package command
 
 import (
+	"compress/gzip"
 	"os"
 
 	"github.com/codegangsta/cli"
@@ -41,7 +42,14 @@ func runAction(context *cli.Context) {
 	}
 	defer predictorFile.Close()
 
-	predictor, err := compl.InflatePredictor(predictorFile)
+	gzipReader, err := gzip.NewReader(predictorFile)
+	if err != nil {
+		// TODO: Handle an error.
+		return
+	}
+	defer gzipReader.Close()
+
+	predictor, err := compl.InflatePredictor(gzipReader)
 	if err != nil {
 		// TODO: Handle an error.
 		return
