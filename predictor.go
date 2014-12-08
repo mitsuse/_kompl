@@ -2,7 +2,6 @@ package compl
 
 import (
 	"bufio"
-	"compress/gzip"
 	"encoding/binary"
 	"errors"
 	"io"
@@ -24,28 +23,22 @@ func InflatePredictor(reader io.Reader) (*Predictor, error) {
 	// TODO: Deserialize a predictor from file.
 	var wordSize int64
 
-	r, err := gzip.NewReader(reader)
-	if err != nil {
-		return nil, err
-	}
-	defer r.Close()
-
-	if err := binary.Read(r, binary.LittleEndian, &wordSize); err != nil {
+	if err := binary.Read(reader, binary.LittleEndian, &wordSize); err != nil {
 		return nil, err
 	}
 
-	wordTrie, err := trie.Inflate(r)
+	wordTrie, err := trie.Inflate(reader)
 	if err != nil {
 		return nil, err
 	}
 
-	ngramTrie, err := trie.Inflate(r)
+	ngramTrie, err := trie.Inflate(reader)
 	if err != nil {
 		return nil, err
 	}
 
 	var valueSeqSize int64
-	if err := binary.Read(r, binary.LittleEndian, &valueSeqSize); err != nil {
+	if err := binary.Read(reader, binary.LittleEndian, &valueSeqSize); err != nil {
 		return nil, err
 	}
 
@@ -56,19 +49,19 @@ func InflatePredictor(reader io.Reader) (*Predictor, error) {
 		var first int64
 		var sibling int64
 
-		if err := binary.Read(r, binary.LittleEndian, &count); err != nil {
+		if err := binary.Read(reader, binary.LittleEndian, &count); err != nil {
 			return nil, err
 		}
 
-		if err := binary.Read(r, binary.LittleEndian, &maxCount); err != nil {
+		if err := binary.Read(reader, binary.LittleEndian, &maxCount); err != nil {
 			return nil, err
 		}
 
-		if err := binary.Read(r, binary.LittleEndian, &first); err != nil {
+		if err := binary.Read(reader, binary.LittleEndian, &first); err != nil {
 			return nil, err
 		}
 
-		if err := binary.Read(r, binary.LittleEndian, &sibling); err != nil {
+		if err := binary.Read(reader, binary.LittleEndian, &sibling); err != nil {
 			return nil, err
 		}
 
@@ -257,43 +250,40 @@ func (p *Predictor) fillFirstAndSibling() {
 }
 
 func (p *Predictor) Deflate(writer io.Writer) error {
-	w := gzip.NewWriter(writer)
-	defer w.Close()
-
-	if err := binary.Write(w, binary.LittleEndian, int64(p.wordSize)); err != nil {
+	if err := binary.Write(writer, binary.LittleEndian, int64(p.wordSize)); err != nil {
 		return err
 	}
 
-	if err := p.wordTrie.Deflate(w); err != nil {
+	if err := p.wordTrie.Deflate(writer); err != nil {
 		return err
 	}
 
-	if err := p.ngramTrie.Deflate(w); err != nil {
+	if err := p.ngramTrie.Deflate(writer); err != nil {
 		return err
 	}
 
 	valueSeqSize := int64(len(p.valueSeq))
-	if err := binary.Write(w, binary.LittleEndian, valueSeqSize); err != nil {
+	if err := binary.Write(writer, binary.LittleEndian, valueSeqSize); err != nil {
 		return err
 	}
 
 	for _, value := range p.valueSeq {
-		err := binary.Write(w, binary.LittleEndian, int64(value.Count))
+		err := binary.Write(writer, binary.LittleEndian, int64(value.Count))
 		if err != nil {
 			return err
 		}
 
-		err = binary.Write(w, binary.LittleEndian, int64(value.MaxCount))
+		err = binary.Write(writer, binary.LittleEndian, int64(value.MaxCount))
 		if err != nil {
 			return err
 		}
 
-		err = binary.Write(w, binary.LittleEndian, int64(value.First))
+		err = binary.Write(writer, binary.LittleEndian, int64(value.First))
 		if err != nil {
 			return err
 		}
 
-		err = binary.Write(w, binary.LittleEndian, int64(value.Sibling))
+		err = binary.Write(writer, binary.LittleEndian, int64(value.Sibling))
 		if err != nil {
 			return err
 		}
