@@ -35,7 +35,9 @@ func (iter *NgramIterator) Order() int {
 
 func (iter *NgramIterator) Iterate() bool {
 	if iter.scanner.Scan() {
-		copy(iter.wordSeq, iter.wordSeq[:iter.order-1])
+		for i := 1; i < len(iter.wordSeq); i++ {
+			iter.wordSeq[i-1] = iter.wordSeq[i]
+		}
 		iter.wordSeq[iter.order-1] = iter.scanner.Text()
 
 		return true
