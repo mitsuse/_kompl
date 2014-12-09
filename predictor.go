@@ -1,13 +1,9 @@
 package compl
 
 import (
-	"bufio"
 	"encoding/binary"
-	"errors"
 	"io"
 	"sort"
-	"strconv"
-	"strings"
 
 	"github.com/mitsuse/compl/trie"
 )
@@ -100,22 +96,26 @@ func InflateRawPredictor(reader io.Reader) (*Predictor, error) {
 }
 
 func (p *Predictor) inflateRaw(reader io.Reader) error {
-	scanner := bufio.NewScanner(reader)
+	// TODO: Get the order of N-gram as a argument..
+	iterator := NewNgramIterator(3, reader)
 
-	for scanner.Scan() {
-		text := scanner.Text()
+	for iterator.Iterate() {
+		wordSeq := iterator.Get()
 
-		wordSeq, count, err := p.processRawLine(text)
-		if err != nil {
-			return err
+		// TODO: Support for the N-grams which have start symbols as context.
+		if len(wordSeq) > 0 && wordSeq[0] == "" {
+			continue
 		}
 
 		key := p.encodeNew(wordSeq)
 
-		node, exist := p.ngramTrie.Add(key)
-		if !exist {
+		node, _ := p.ngramTrie.Add(key)
+		if node.Value > 0 {
+			value := p.valueSeq[node.Value-1]
+			value.Count++
+		} else {
 			value := &Value{
-				Count:    count,
+				Count:    1,
 				MaxCount: 0,
 				First:    -1,
 				Sibling:  -1,
@@ -126,7 +126,7 @@ func (p *Predictor) inflateRaw(reader io.Reader) error {
 		}
 	}
 
-	if err := scanner.Err(); err != nil {
+	if err := iterator.Error(); err != nil {
 		return err
 	}
 
@@ -134,25 +134,6 @@ func (p *Predictor) inflateRaw(reader io.Reader) error {
 	p.fillFirstAndSibling()
 
 	return nil
-}
-
-func (p *Predictor) processRawLine(text string) (wordSeq []string, count int, err error) {
-	textSplit := strings.Split(text, "\t")
-	if len(textSplit) != 2 {
-		// TODO: Write the error message.
-		err = errors.New("")
-		return
-	}
-
-	ngram := textSplit[0]
-	wordSeq = strings.Split(ngram, " ")
-
-	count, err = strconv.Atoi(textSplit[1])
-	if err != nil {
-		return
-	}
-
-	return
 }
 
 func (p *Predictor) encodeNew(wordSeq []string) (encodedSeq []int32) {
@@ -194,7 +175,7 @@ func (p *Predictor) fillMaxScore() {
 		}
 
 		maxChild := node.FindMax(func(x, y int) bool {
-			return p.valueSeq[x].Count-p.valueSeq[y].Count < 0
+			return p.valueSeq[x-1].Count-p.valueSeq[y-1].Count < 0
 		})
 
 		if maxChild == nil {
