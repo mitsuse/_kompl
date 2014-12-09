@@ -102,11 +102,15 @@ func (p *Predictor) inflateRaw(reader io.Reader) error {
 	for iterator.Iterate() {
 		wordSeq := iterator.Get()
 
+		// TODO: Support for the N-grams which have start symbols as context.
+		if len(wordSeq) > 0 && wordSeq[0] == "" {
+			continue
+		}
+
 		key := p.encodeNew(wordSeq)
 
 		node, _ := p.ngramTrie.Add(key)
 		if node.Value > 0 {
-			println(node.Value)
 			value := p.valueSeq[node.Value-1]
 			value.Count++
 		} else {
@@ -155,7 +159,6 @@ func (p *Predictor) encodeNew(wordSeq []string) (encodedSeq []int32) {
 }
 
 func (p *Predictor) fillMaxScore() {
-	println("fillMaxScore")
 	iter := p.ngramTrie.Iter()
 	for iter.HasNext() {
 		node := iter.Get()
@@ -172,7 +175,6 @@ func (p *Predictor) fillMaxScore() {
 		}
 
 		maxChild := node.FindMax(func(x, y int) bool {
-			println(x, y, len(p.valueSeq))
 			return p.valueSeq[x-1].Count-p.valueSeq[y-1].Count < 0
 		})
 
