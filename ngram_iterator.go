@@ -1,32 +1,56 @@
 package compl
 
 import (
+	"bufio"
 	"io"
 )
 
 type NgramIterator struct {
-	reader io.Reader
+	scanner *bufio.Scanner
+	wordSeq []string
+	order   int
 }
 
-func NewNgramIterator(reader io.Reader) *NgramIterator {
+func NewNgramIterator(order int, reader io.Reader) *NgramIterator {
+	scanner := bufio.NewScanner(reader)
+	scanner.Split(bufio.ScanWords)
+
+	wordSeq := make([]string, order)
+	for i := 0; i < len(wordSeq); i++ {
+		wordSeq[i] = ""
+	}
+
 	iter := &NgramIterator{
-		reader: reader,
+		scanner: scanner,
+		wordSeq: wordSeq,
+		order:   order,
 	}
 
 	return iter
 }
 
+func (iter *NgramIterator) Order() int {
+	return iter.order
+}
+
 func (iter *NgramIterator) Iterate() bool {
-	// TODO: Implement this.
+	if iter.scanner.Scan() {
+		copy(iter.wordSeq, iter.wordSeq[:iter.order-1])
+		iter.wordSeq[iter.order-1] = iter.Get()
+
+		return true
+	}
+
 	return false
 }
 
 func (iter *NgramIterator) Get() []string {
-	// TODO: Implement this.
-	return nil
+	wordSeq := make([]string, iter.order)
+	copy(wordSeq, iter.wordSeq)
+
+	return wordSeq
 }
 
 func (iter *NgramIterator) Error() error {
-	// TODO: Implement this.
-	return nil
+	return iter.scanner.Err()
 }
