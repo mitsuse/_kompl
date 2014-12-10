@@ -12,7 +12,7 @@ func NewRunCommand() cli.Command {
 	command := cli.Command{
 		Name:      "run",
 		ShortName: "r",
-		Usage:     "Runs a seal server.",
+		Usage:     "Runs the Kompl server.",
 		Action:    runAction,
 
 		Flags: []cli.Flag{
