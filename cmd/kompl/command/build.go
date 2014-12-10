@@ -12,7 +12,7 @@ func NewBuildCommand() cli.Command {
 	command := cli.Command{
 		Name:      "build",
 		ShortName: "b",
-		Usage:     "Builds a binary-formatted word predictor",
+		Usage:     "Builds a word predictor for the Kompl server.",
 		Action:    buildAction,
 
 		Flags: []cli.Flag{
@@ -25,7 +25,7 @@ func NewBuildCommand() cli.Command {
 			cli.StringFlag{
 				Name:  "raw,r",
 				Value: "predictor.kompl",
-				Usage: "The input path of a raw count file.",
+				Usage: "The input path of a word-segmented corpus.",
 			},
 		},
 	}
