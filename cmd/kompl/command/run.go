@@ -34,7 +34,6 @@ func NewRunCommand() cli.Command {
 }
 
 func runAction(context *cli.Context) {
-	// TODO: Start a seal server.
 	predictorFile, err := os.Open(context.String("predictor"))
 	if err != nil {
 		// TODO: Handle an error.
