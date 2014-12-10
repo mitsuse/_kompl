@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/codegangsta/cli"
-	"github.com/mitsuse/compl"
+	"github.com/mitsuse/kompl"
 )
 
 func NewBuildCommand() cli.Command {
@@ -18,13 +18,13 @@ func NewBuildCommand() cli.Command {
 		Flags: []cli.Flag{
 			cli.StringFlag{
 				Name:  "predictor,p",
-				Value: "predictor.compl",
+				Value: "predictor.kompl",
 				Usage: "The output path of a word predictor.",
 			},
 
 			cli.StringFlag{
 				Name:  "raw,r",
-				Value: "predictor.compl",
+				Value: "predictor.kompl",
 				Usage: "The input path of a raw count file.",
 			},
 		},
@@ -42,7 +42,7 @@ func buildAction(context *cli.Context) {
 	}
 	defer rawFile.Close()
 
-	predictor, err := compl.InflateRawPredictor(rawFile)
+	predictor, err := kompl.InflateRawPredictor(rawFile)
 	if err != nil {
 		// TODO: Handle an error.
 		return

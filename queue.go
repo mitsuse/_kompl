@@ -1,4 +1,4 @@
-package compl
+package kompl
 
 import (
 	"sort"

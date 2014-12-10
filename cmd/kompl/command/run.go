@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/codegangsta/cli"
-	"github.com/mitsuse/compl"
+	"github.com/mitsuse/kompl"
 )
 
 func NewRunCommand() cli.Command {
@@ -18,14 +18,14 @@ func NewRunCommand() cli.Command {
 		Flags: []cli.Flag{
 			cli.StringFlag{
 				Name:  "predictor,p",
-				Value: "predictor.compl",
+				Value: "predictor.kompl",
 				Usage: "The path of a word predictor.",
 			},
 
 			cli.StringFlag{
 				Name:  "port,n",
 				Value: "8080",
-				Usage: "The port number which a compl server uses.",
+				Usage: "The port number which a kompl server uses.",
 			},
 		},
 	}
@@ -49,13 +49,13 @@ func runAction(context *cli.Context) {
 	}
 	defer gzipReader.Close()
 
-	predictor, err := compl.InflatePredictor(gzipReader)
+	predictor, err := kompl.InflatePredictor(gzipReader)
 	if err != nil {
 		// TODO: Handle an error.
 		return
 	}
 
-	s := compl.NewServer(context.String("port"), predictor)
+	s := kompl.NewServer(context.String("port"), predictor)
 	if err := s.Run(); err != nil {
 		// TODO: Handle an error.
 		return

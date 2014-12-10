@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/codegangsta/cli"
-	"github.com/mitsuse/compl/cmd/compl/command"
+	"github.com/mitsuse/kompl/cmd/kompl/command"
 )
 
 func main() {
@@ -15,7 +15,7 @@ func main() {
 func initApp() *cli.App {
 	app := cli.NewApp()
 
-	app.Name = "compl"
+	app.Name = "kompl"
 	app.Version = "0.0.1"
 	app.Usage = "A server for N-gram based word completion."
 

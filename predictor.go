@@ -1,11 +1,11 @@
-package compl
+package kompl
 
 import (
 	"encoding/binary"
 	"io"
 	"sort"
 
-	"github.com/mitsuse/compl/trie"
+	"github.com/mitsuse/kompl/trie"
 )
 
 type Predictor struct {
@@ -81,7 +81,7 @@ func InflatePredictor(reader io.Reader) (*Predictor, error) {
 }
 
 func InflateRawPredictor(reader io.Reader) (*Predictor, error) {
-	// TODO: Convert a raw count file into a predictor for Compl server.
+	// TODO: Convert a raw count file into a predictor for Kompl server.
 	p := &Predictor{
 		wordSize:  0,
 		wordTrie:  trie.New(),
