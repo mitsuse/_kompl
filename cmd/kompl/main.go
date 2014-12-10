@@ -17,7 +17,7 @@ func initApp() *cli.App {
 
 	app.Name = "kompl"
 	app.Version = "0.0.1"
-	app.Usage = "A server for N-gram based word completion."
+	app.Usage = "A server for K-best word completion based on N-gram frequency."
 
 	app.Commands = []cli.Command{
 		command.NewRunCommand(),
