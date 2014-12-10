@@ -36,27 +36,27 @@ func NewRunCommand() cli.Command {
 func runAction(context *cli.Context) {
 	predictorFile, err := os.Open(context.String("predictor"))
 	if err != nil {
-		// TODO: Handle an error.
+		PrintError(ERROR_LOADING_PREDICTOR, err)
 		return
 	}
 	defer predictorFile.Close()
 
 	gzipReader, err := gzip.NewReader(predictorFile)
 	if err != nil {
-		// TODO: Handle an error.
+		PrintError(ERROR_LOADING_PREDICTOR, err)
 		return
 	}
 	defer gzipReader.Close()
 
 	predictor, err := kompl.InflatePredictor(gzipReader)
 	if err != nil {
-		// TODO: Handle an error.
+		PrintError(ERROR_LOADING_PREDICTOR, err)
 		return
 	}
 
 	s := kompl.NewServer(context.String("port"), predictor)
 	if err := s.Run(); err != nil {
-		// TODO: Handle an error.
+		PrintError(ERROR_RUNNING_SERVER, err)
 		return
 	}
 }
