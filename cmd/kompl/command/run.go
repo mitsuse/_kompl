@@ -24,7 +24,7 @@ func NewRunCommand() cli.Command {
 
 			cli.StringFlag{
 				Name:  "port,n",
-				Value: "8080",
+				Value: "8901",
 				Usage: "The port number which a kompl server uses.",
 			},
 		},
