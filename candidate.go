@@ -1,7 +1,7 @@
-package compl
+package kompl
 
 import (
-	"github.com/mitsuse/compl/trie"
+	"github.com/mitsuse/kompl/trie"
 )
 
 type Candidate struct {

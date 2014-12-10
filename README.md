@@ -1,9 +1,9 @@
-# Compl
+# Kompl
 
-[![GoDoc](http://godoc.org/github.com/mitsuse/compl?status.svg)](http://godoc.org/github.com/mitsuse/compl)
-[![Circle CI](https://circleci.com/gh/mitsuse/compl.svg?style=shield)](https://circleci.com/gh/mitsuse/compl)
+[![GoDoc](http://godoc.org/github.com/mitsuse/kompl?status.svg)](http://godoc.org/github.com/mitsuse/kompl)
+[![Circle CI](https://circleci.com/gh/mitsuse/kompl.svg?style=shield)](https://circleci.com/gh/mitsuse/kompl)
 
-A server for N-gram based word completion implemented in Golang.
+A server for K-best word completion based on N-gram frequency.
 
 ## TODO
 
