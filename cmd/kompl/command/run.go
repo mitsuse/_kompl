@@ -12,7 +12,7 @@ func NewRunCommand() cli.Command {
 	command := cli.Command{
 		Name:      "run",
 		ShortName: "r",
-		Usage:     "Runs a seal server.",
+		Usage:     "Runs the Kompl server.",
 		Action:    runAction,
 
 		Flags: []cli.Flag{
@@ -24,8 +24,8 @@ func NewRunCommand() cli.Command {
 
 			cli.StringFlag{
 				Name:  "port,n",
-				Value: "8080",
-				Usage: "The port number which a kompl server uses.",
+				Value: "8901",
+				Usage: "The port number which the Kompl server uses.",
 			},
 		},
 	}
@@ -34,30 +34,29 @@ func NewRunCommand() cli.Command {
 }
 
 func runAction(context *cli.Context) {
-	// TODO: Start a seal server.
 	predictorFile, err := os.Open(context.String("predictor"))
 	if err != nil {
-		// TODO: Handle an error.
+		PrintError(ERROR_LOADING_PREDICTOR, err)
 		return
 	}
 	defer predictorFile.Close()
 
 	gzipReader, err := gzip.NewReader(predictorFile)
 	if err != nil {
-		// TODO: Handle an error.
+		PrintError(ERROR_LOADING_PREDICTOR, err)
 		return
 	}
 	defer gzipReader.Close()
 
 	predictor, err := kompl.InflatePredictor(gzipReader)
 	if err != nil {
-		// TODO: Handle an error.
+		PrintError(ERROR_LOADING_PREDICTOR, err)
 		return
 	}
 
 	s := kompl.NewServer(context.String("port"), predictor)
 	if err := s.Run(); err != nil {
-		// TODO: Handle an error.
+		PrintError(ERROR_RUNNING_SERVER, err)
 		return
 	}
 }

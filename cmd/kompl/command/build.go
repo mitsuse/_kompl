@@ -12,7 +12,7 @@ func NewBuildCommand() cli.Command {
 	command := cli.Command{
 		Name:      "build",
 		ShortName: "b",
-		Usage:     "Builds a binary-formatted word predictor",
+		Usage:     "Builds a word predictor for the Kompl server.",
 		Action:    buildAction,
 
 		Flags: []cli.Flag{
@@ -25,7 +25,7 @@ func NewBuildCommand() cli.Command {
 			cli.StringFlag{
 				Name:  "raw,r",
 				Value: "predictor.kompl",
-				Usage: "The input path of a raw count file.",
+				Usage: "The input path of a word-segmented corpus.",
 			},
 		},
 	}
@@ -34,32 +34,32 @@ func NewBuildCommand() cli.Command {
 }
 
 func buildAction(context *cli.Context) {
-	// TODO: Convert a raw count file into binary formatted predictor.
 	rawFile, err := os.Open(context.String("raw"))
 	if err != nil {
-		// TODO: Handle an error.
+		PrintError(ERROR_LOADING_CORPUS, err)
 		return
 	}
 	defer rawFile.Close()
 
 	predictor, err := kompl.InflateRawPredictor(rawFile)
 	if err != nil {
-		// TODO: Handle an error.
+		PrintError(ERROR_BUILDING_PREDICTOR, err)
 		return
 	}
 
 	predictorFile, err := os.Create(context.String("predictor"))
 	if err != nil {
-		// TODO: Handle an error.
+		PrintError(ERROR_WRITING_PREDICTOR, err)
 		return
 	}
+
 	defer predictorFile.Close()
 
 	gzipWriter := gzip.NewWriter(predictorFile)
 	defer gzipWriter.Close()
 
 	if err := predictor.Deflate(gzipWriter); err != nil {
-		// TODO: Handle an error.
+		PrintError(ERROR_WRITING_PREDICTOR, err)
 		return
 	}
 }
