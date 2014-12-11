@@ -15,7 +15,7 @@ type Predictor struct {
 	valueSeq  []*Value
 }
 
-func InflatePredictor(reader io.Reader) (*Predictor, error) {
+func LoadPredictor(reader io.Reader) (*Predictor, error) {
 	// TODO: Deserialize a predictor from file.
 	var wordSize int64
 
@@ -80,7 +80,7 @@ func InflatePredictor(reader io.Reader) (*Predictor, error) {
 	return p, nil
 }
 
-func InflateRawPredictor(reader io.Reader) (*Predictor, error) {
+func BuildPredictor(reader io.Reader) (*Predictor, error) {
 	// TODO: Convert a raw count file into a predictor for Kompl server.
 	p := &Predictor{
 		wordSize:  0,
@@ -88,14 +88,14 @@ func InflateRawPredictor(reader io.Reader) (*Predictor, error) {
 		ngramTrie: trie.New(),
 	}
 
-	if err := p.inflateRaw(reader); err != nil {
+	if err := p.build(reader); err != nil {
 		return nil, err
 	}
 
 	return p, nil
 }
 
-func (p *Predictor) inflateRaw(reader io.Reader) error {
+func (p *Predictor) build(reader io.Reader) error {
 	// TODO: Get the order of N-gram as a argument..
 	iterator := NewNgramIterator(3, reader)
 
@@ -230,7 +230,7 @@ func (p *Predictor) fillFirstAndSibling() {
 	}
 }
 
-func (p *Predictor) Deflate(writer io.Writer) error {
+func (p *Predictor) Dump(writer io.Writer) error {
 	if err := binary.Write(writer, binary.LittleEndian, int64(p.wordSize)); err != nil {
 		return err
 	}

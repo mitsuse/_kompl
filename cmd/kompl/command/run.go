@@ -48,7 +48,7 @@ func runAction(context *cli.Context) {
 	}
 	defer gzipReader.Close()
 
-	predictor, err := kompl.InflatePredictor(gzipReader)
+	predictor, err := kompl.LoadPredictor(gzipReader)
 	if err != nil {
 		PrintError(ERROR_LOADING_PREDICTOR, err)
 		return
