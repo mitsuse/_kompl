@@ -56,8 +56,8 @@ func (p *Predictor) build(reader io.Reader) error {
 		return err
 	}
 
-	p.fillMaxScore()
-	p.fillFirstAndSibling()
+	fillMaxScore(p)
+	fillFirstAndSibling(p)
 
 	return nil
 }
@@ -84,7 +84,7 @@ func (p *Predictor) encodeNew(wordSeq []string) (encodedSeq []int32) {
 	return
 }
 
-func (p *Predictor) fillMaxScore() {
+func fillMaxScore(p *Predictor) {
 	iter := p.ngramTrie.Iter()
 	for iter.HasNext() {
 		node := iter.Get()
@@ -112,7 +112,7 @@ func (p *Predictor) fillMaxScore() {
 	}
 }
 
-func (p *Predictor) fillFirstAndSibling() {
+func fillFirstAndSibling(p *Predictor) {
 	nodeStack := []*trie.Trie{p.ngramTrie}
 
 	for len(nodeStack) > 0 {
