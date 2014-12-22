@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/codegangsta/cli"
-	"github.com/mitsuse/kompl"
+	"github.com/mitsuse/kompl/predictor"
 )
 
 func NewBuildCommand() cli.Command {
@@ -41,7 +41,7 @@ func buildAction(context *cli.Context) {
 	}
 	defer rawFile.Close()
 
-	predictor, err := kompl.BuildPredictor(rawFile)
+	predictor, err := predictor.BuildPredictor(rawFile)
 	if err != nil {
 		PrintError(ERROR_BUILDING_PREDICTOR, err)
 		return

@@ -1,4 +1,4 @@
-package kompl
+package predictor
 
 import (
 	"io"
