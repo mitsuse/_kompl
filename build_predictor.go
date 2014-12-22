@@ -7,6 +7,7 @@ import (
 	"github.com/mitsuse/kompl/trie"
 )
 
+// TODO: Get the order of N-gram as a argument..
 func BuildPredictor(reader io.Reader) (*Predictor, error) {
 	p := &Predictor{
 		wordSize:  0,
@@ -14,7 +15,12 @@ func BuildPredictor(reader io.Reader) (*Predictor, error) {
 		ngramTrie: trie.New(),
 	}
 
-	if err := p.build(reader); err != nil {
+	iterator := NewNgramIterator(3, reader)
+	for iterator.Iterate() {
+		storeWordSeq(p, iterator.Get())
+	}
+
+	if err := iterator.Error(); err != nil {
 		return nil, err
 	}
 
@@ -24,42 +30,29 @@ func BuildPredictor(reader io.Reader) (*Predictor, error) {
 	return p, nil
 }
 
-func (p *Predictor) build(reader io.Reader) error {
-	// TODO: Get the order of N-gram as a argument..
-	iterator := NewNgramIterator(3, reader)
-
-	for iterator.Iterate() {
-		wordSeq := iterator.Get()
-
-		// TODO: Support for the N-grams which have start symbols as context.
-		if len(wordSeq) > 0 && wordSeq[0] == "" {
-			continue
-		}
-
-		key := p.encodeNew(wordSeq)
-
-		node, _ := p.ngramTrie.Add(key)
-		if node.Value > 0 {
-			value := p.valueSeq[node.Value-1]
-			value.Count++
-		} else {
-			value := &Value{
-				Count:    1,
-				MaxCount: 0,
-				First:    -1,
-				Sibling:  -1,
-			}
-
-			p.valueSeq = append(p.valueSeq, value)
-			node.Value = len(p.valueSeq)
-		}
+func storeWordSeq(p *Predictor, wordSeq []string) {
+	// TODO: Support for the N-grams which have start symbols as context.
+	if len(wordSeq) > 0 && wordSeq[0] == "" {
+		return
 	}
 
-	if err := iterator.Error(); err != nil {
-		return err
-	}
+	key := p.encodeNew(wordSeq)
 
-	return nil
+	node, _ := p.ngramTrie.Add(key)
+	if node.Value > 0 {
+		value := p.valueSeq[node.Value-1]
+		value.Count++
+	} else {
+		value := &Value{
+			Count:    1,
+			MaxCount: 0,
+			First:    -1,
+			Sibling:  -1,
+		}
+
+		p.valueSeq = append(p.valueSeq, value)
+		node.Value = len(p.valueSeq)
+	}
 }
 
 func (p *Predictor) encodeNew(wordSeq []string) (encodedSeq []int32) {
