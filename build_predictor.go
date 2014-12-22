@@ -18,6 +18,9 @@ func BuildPredictor(reader io.Reader) (*Predictor, error) {
 		return nil, err
 	}
 
+	fillMaxScore(p)
+	fillFirstAndSibling(p)
+
 	return p, nil
 }
 
@@ -55,9 +58,6 @@ func (p *Predictor) build(reader io.Reader) error {
 	if err := iterator.Error(); err != nil {
 		return err
 	}
-
-	fillMaxScore(p)
-	fillFirstAndSibling(p)
 
 	return nil
 }
