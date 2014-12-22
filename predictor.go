@@ -16,7 +16,6 @@ type Predictor struct {
 }
 
 func LoadPredictor(reader io.Reader) (*Predictor, error) {
-	// TODO: Deserialize a predictor from file.
 	var wordSize int64
 
 	if err := binary.Read(reader, binary.LittleEndian, &wordSize); err != nil {
@@ -81,7 +80,6 @@ func LoadPredictor(reader io.Reader) (*Predictor, error) {
 }
 
 func BuildPredictor(reader io.Reader) (*Predictor, error) {
-	// TODO: Convert a raw count file into a predictor for Kompl server.
 	p := &Predictor{
 		wordSize:  0,
 		wordTrie:  trie.New(),
