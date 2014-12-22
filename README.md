@@ -2,6 +2,7 @@
 
 [![GoDoc](http://godoc.org/github.com/mitsuse/kompl?status.svg)](http://godoc.org/github.com/mitsuse/kompl)
 [![Circle CI](https://circleci.com/gh/mitsuse/kompl.svg?style=shield)](https://circleci.com/gh/mitsuse/kompl)
+[![License](https://img.shields.io/badge/license-MIT-yellowgreen.svg)](http://opensource.org/licenses/MIT)
 
 A server for K-best word completion based on N-gram frequency.
 
