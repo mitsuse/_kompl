@@ -17,7 +17,14 @@ func BuildPredictor(reader io.Reader) (*Predictor, error) {
 
 	iterator := NewNgramIterator(3, reader)
 	for iterator.Iterate() {
-		storeWordSeq(p, iterator.Get())
+		// TODO: Support for the N-grams which have start symbols as context.
+		wordSeq := iterator.Get()
+		if len(wordSeq) > 0 && wordSeq[0] == "" {
+			continue
+		}
+
+		key := encodeNew(p, wordSeq)
+		storeKey(p, key)
 	}
 
 	if err := iterator.Error(); err != nil {
@@ -30,14 +37,7 @@ func BuildPredictor(reader io.Reader) (*Predictor, error) {
 	return p, nil
 }
 
-func storeWordSeq(p *Predictor, wordSeq []string) {
-	// TODO: Support for the N-grams which have start symbols as context.
-	if len(wordSeq) > 0 && wordSeq[0] == "" {
-		return
-	}
-
-	key := p.encodeNew(wordSeq)
-
+func storeKey(p *Predictor, key []int32) {
 	node, _ := p.ngramTrie.Add(key)
 	if node.Value > 0 {
 		value := p.valueSeq[node.Value-1]
@@ -55,7 +55,7 @@ func storeWordSeq(p *Predictor, wordSeq []string) {
 	}
 }
 
-func (p *Predictor) encodeNew(wordSeq []string) (encodedSeq []int32) {
+func encodeNew(p *Predictor, wordSeq []string) (encodedSeq []int32) {
 	encodedSeq = []int32{}
 
 	// Encode only context words with "wordTrie".
