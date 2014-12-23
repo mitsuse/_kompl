@@ -22,12 +22,19 @@ func (p *Predictor) Predict(context []string, prefix string, k int) []string {
 
 	contextKey := p.encode(context, prefix)
 
-	prefixNode, exist := p.ngramTrie.Get(contextKey)
-	if !exist {
-		return candSeq
+	for start := 0; start < len(contextKey); start++ {
+		prefixNode, exist := p.ngramTrie.Get(contextKey[start:])
+		if !exist {
+			continue
+		}
+
+		candSeq = p.generateCandidates(prefix, prefixNode, k)
+		if len(candSeq) > 0 {
+			break
+		}
 	}
 
-	return p.generateCandidates(prefix, prefixNode, k)
+	return candSeq
 }
 
 func (p *Predictor) encode(context []string, prefix string) []int32 {
@@ -41,6 +48,8 @@ func (p *Predictor) encode(context []string, prefix string) []int32 {
 			key = append(key, int32(node.Value))
 		}
 	}
+
+	key = append(key, _END_OF_CONTEXT)
 
 	for _, char := range []int32(prefix) {
 		key = append(key, char)
