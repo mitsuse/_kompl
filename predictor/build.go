@@ -17,7 +17,7 @@ func Build(reader io.Reader) (*Predictor, error) {
 		ngramTrie: trie.New(),
 	}
 
-	iterator := ngram.NewNgramIterator(3, reader)
+	iterator := ngram.NewIterator(3, reader)
 	for iterator.Iterate() {
 		// TODO: Support for the N-grams which have start symbols as context.
 		wordSeq := iterator.Get()

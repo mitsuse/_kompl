@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-type NgramIterator struct {
+type Iterator struct {
 	wordScanner *bufio.Scanner
 	lineScanner *bufio.Scanner
 	wordSeq     []string
@@ -14,7 +14,7 @@ type NgramIterator struct {
 	err         error
 }
 
-func NewNgramIterator(order int, reader io.Reader) *NgramIterator {
+func NewIterator(order int, reader io.Reader) *Iterator {
 	lineScanner := bufio.NewScanner(reader)
 
 	wordSeq := make([]string, order)
@@ -22,7 +22,7 @@ func NewNgramIterator(order int, reader io.Reader) *NgramIterator {
 		wordSeq[i] = ""
 	}
 
-	iter := &NgramIterator{
+	iter := &Iterator{
 		lineScanner: lineScanner,
 		wordSeq:     wordSeq,
 		order:       order,
@@ -31,11 +31,11 @@ func NewNgramIterator(order int, reader io.Reader) *NgramIterator {
 	return iter
 }
 
-func (iter *NgramIterator) Order() int {
+func (iter *Iterator) Order() int {
 	return iter.order
 }
 
-func (iter *NgramIterator) Iterate() bool {
+func (iter *Iterator) Iterate() bool {
 	var hasNext bool
 
 	for {
@@ -66,13 +66,13 @@ func (iter *NgramIterator) Iterate() bool {
 	return hasNext
 }
 
-func (iter *NgramIterator) Get() []string {
+func (iter *Iterator) Get() []string {
 	wordSeq := make([]string, iter.order)
 	copy(wordSeq, iter.wordSeq)
 
 	return wordSeq
 }
 
-func (iter *NgramIterator) Error() error {
+func (iter *Iterator) Error() error {
 	return iter.err
 }
