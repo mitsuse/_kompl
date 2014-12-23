@@ -15,6 +15,7 @@ func ScanTokens(data []byte, atEOF bool) (advance int, token []byte, err error) 
 			break
 		}
 	}
+
 	// Scan until space, marking end of word.
 	for width, i := 0, start; i < len(data); i += width {
 		var r rune
@@ -23,10 +24,12 @@ func ScanTokens(data []byte, atEOF bool) (advance int, token []byte, err error) 
 			return i + width, data[start:i], nil
 		}
 	}
+
 	// If we're at EOF, we have a final, non-empty, non-terminated word. Return it.
 	if atEOF && len(data) > start {
 		return len(data), data[start:], nil
 	}
+
 	// Request more data.
 	return start, nil, nil
 }
