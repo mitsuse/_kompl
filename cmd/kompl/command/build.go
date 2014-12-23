@@ -31,7 +31,7 @@ func NewBuildCommand() cli.Command {
 			cli.StringFlag{
 				Name:  "raw,r",
 				Value: "corpus.raw",
-				Usage: "The input path of a word-segmented corpus.",
+				Usage: "The input path of a raw corpus.",
 			},
 		},
 	}
