@@ -6,6 +6,7 @@ import (
 
 	"github.com/codegangsta/cli"
 	"github.com/mitsuse/kompl"
+	"github.com/mitsuse/kompl/predictor"
 )
 
 func NewRunCommand() cli.Command {
@@ -48,13 +49,13 @@ func runAction(context *cli.Context) {
 	}
 	defer gzipReader.Close()
 
-	predictor, err := kompl.InflatePredictor(gzipReader)
+	p, err := predictor.Load(gzipReader)
 	if err != nil {
 		PrintError(ERROR_LOADING_PREDICTOR, err)
 		return
 	}
 
-	s := kompl.NewServer(context.String("port"), predictor)
+	s := kompl.NewServer(context.String("port"), p)
 	if err := s.Run(); err != nil {
 		PrintError(ERROR_RUNNING_SERVER, err)
 		return

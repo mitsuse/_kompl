@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/codegangsta/cli"
-	"github.com/mitsuse/kompl"
+	"github.com/mitsuse/kompl/predictor"
 )
 
 func NewBuildCommand() cli.Command {
@@ -41,7 +41,7 @@ func buildAction(context *cli.Context) {
 	}
 	defer rawFile.Close()
 
-	predictor, err := kompl.InflateRawPredictor(rawFile)
+	p, err := predictor.Build(rawFile)
 	if err != nil {
 		PrintError(ERROR_BUILDING_PREDICTOR, err)
 		return
@@ -58,7 +58,7 @@ func buildAction(context *cli.Context) {
 	gzipWriter := gzip.NewWriter(predictorFile)
 	defer gzipWriter.Close()
 
-	if err := predictor.Deflate(gzipWriter); err != nil {
+	if err := predictor.Dump(p, gzipWriter); err != nil {
 		PrintError(ERROR_WRITING_PREDICTOR, err)
 		return
 	}

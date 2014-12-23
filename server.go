@@ -4,14 +4,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/mitsuse/kompl/predictor"
 )
 
 type Server struct {
 	port      string
-	predictor *Predictor
+	predictor *predictor.Predictor
 }
 
-func NewServer(port string, predictor *Predictor) *Server {
+func NewServer(port string, predictor *predictor.Predictor) *Server {
 	// TODO: Configure a server.
 	s := &Server{
 		port:      port,
@@ -25,7 +27,7 @@ func (s *Server) Port() string {
 	return s.port
 }
 
-func (s *Server) Predictor() *Predictor {
+func (s *Server) Predictor() *predictor.Predictor {
 	return s.predictor
 }
 

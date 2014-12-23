@@ -1,4 +1,4 @@
-package kompl
+package data
 
 import (
 	"bufio"
