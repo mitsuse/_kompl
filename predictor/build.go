@@ -30,7 +30,10 @@ func Build(order int, reader io.Reader) (*Predictor, error) {
 		}
 
 		key := encodeNew(p, wordSeq)
-		storeKey(p, key)
+
+		for start := 0; start < order; start++ {
+			storeKey(p, key[start:])
+		}
 	}
 
 	if err := iterator.Error(); err != nil {
