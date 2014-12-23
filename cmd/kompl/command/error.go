@@ -6,5 +6,9 @@ import (
 )
 
 func PrintError(message string, err error) {
-	fmt.Fprintf(os.Stderr, "%s: %s: %s\n", Name, message, err)
+	if err == nil {
+		fmt.Fprintf(os.Stderr, "%s: %s\n", Name, message)
+	} else {
+		fmt.Fprintf(os.Stderr, "%s: %s: %s\n", Name, message, err)
+	}
 }

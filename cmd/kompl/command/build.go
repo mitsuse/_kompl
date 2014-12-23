@@ -16,6 +16,12 @@ func NewBuildCommand() cli.Command {
 		Action:    buildAction,
 
 		Flags: []cli.Flag{
+			cli.IntFlag{
+				Name:  "ngram-order,n",
+				Value: 3,
+				Usage: "The order of N-gram.",
+			},
+
 			cli.StringFlag{
 				Name:  "predictor,p",
 				Value: "predictor.kompl",
@@ -34,6 +40,12 @@ func NewBuildCommand() cli.Command {
 }
 
 func buildAction(context *cli.Context) {
+	order := context.Int("ngram-order")
+	if order < 2 {
+		PrintError(ERROR_INVALID_NGRAM_ORDER, nil)
+		return
+	}
+
 	rawFile, err := os.Open(context.String("raw"))
 	if err != nil {
 		PrintError(ERROR_LOADING_CORPUS, err)
@@ -41,7 +53,7 @@ func buildAction(context *cli.Context) {
 	}
 	defer rawFile.Close()
 
-	p, err := predictor.Build(rawFile)
+	p, err := predictor.Build(order, rawFile)
 	if err != nil {
 		PrintError(ERROR_BUILDING_PREDICTOR, err)
 		return

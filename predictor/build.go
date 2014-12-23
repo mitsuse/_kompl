@@ -9,15 +9,14 @@ import (
 	"github.com/mitsuse/kompl/trie"
 )
 
-// TODO: Get the order of N-gram as a argument..
-func Build(reader io.Reader) (*Predictor, error) {
+func Build(order int, reader io.Reader) (*Predictor, error) {
 	p := &Predictor{
 		wordSize:  0,
 		wordTrie:  trie.New(),
 		ngramTrie: trie.New(),
 	}
 
-	iterator := ngram.NewIterator(3, reader)
+	iterator := ngram.NewIterator(order, reader)
 	for iterator.Iterate() {
 		// TODO: Support for the N-grams which have start symbols as context.
 		wordSeq := iterator.Get()
