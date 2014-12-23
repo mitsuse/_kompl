@@ -44,7 +44,7 @@ func storeKey(p *Predictor, key []int32) {
 		value := p.valueSeq[node.Value-1]
 		value.Count++
 	} else {
-		value := &Value{
+		value := &data.Value{
 			Count:    1,
 			MaxCount: 0,
 			First:    -1,
@@ -83,7 +83,7 @@ func fillMaxScore(p *Predictor) {
 	for iter.HasNext() {
 		node := iter.Get()
 		if node.Value == 0 {
-			value := &Value{
+			value := &data.Value{
 				Count:    0,
 				MaxCount: 0,
 				First:    -1,
