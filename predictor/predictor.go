@@ -42,6 +42,8 @@ func (p *Predictor) encode(context []string, prefix string) []int32 {
 		}
 	}
 
+	key = append(key, _END_OF_CONTEXT)
+
 	for _, char := range []int32(prefix) {
 		key = append(key, char)
 	}

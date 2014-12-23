@@ -9,6 +9,10 @@ import (
 	"github.com/mitsuse/kompl/trie"
 )
 
+const (
+	_END_OF_CONTEXT = -1
+)
+
 func Build(order int, reader io.Reader) (*Predictor, error) {
 	p := &Predictor{
 		order:     order,
@@ -74,6 +78,8 @@ func encodeNew(p *Predictor, wordSeq []string) (encodedSeq []int32) {
 	}
 
 	charSeq := []int32(wordSeq[len(wordSeq)-1])
+
+	encodedSeq = append(encodedSeq, _END_OF_CONTEXT)
 	encodedSeq = append(encodedSeq, charSeq...)
 
 	return
