@@ -44,7 +44,7 @@ func storeKey(p *Predictor, key []int32) {
 		value := p.valueSeq[node.Value-1]
 		value.Count++
 	} else {
-		value := &Value{
+		value := &data.Value{
 			Count:    1,
 			MaxCount: 0,
 			First:    -1,
@@ -83,7 +83,7 @@ func fillMaxScore(p *Predictor) {
 	for iter.HasNext() {
 		node := iter.Get()
 		if node.Value == 0 {
-			value := &Value{
+			value := &data.Value{
 				Count:    0,
 				MaxCount: 0,
 				First:    -1,
@@ -113,10 +113,7 @@ func fillFirstAndSibling(p *Predictor) {
 		node := nodeStack[len(nodeStack)-1]
 		nodeStack = nodeStack[:len(nodeStack)-1]
 
-		indexedChildSeq := &IndexedNodeSeq{
-			seq:      []*IndexedNode{},
-			valueSeq: p.valueSeq,
-		}
+		indexedChildSeq := data.NewIndexedNodeSeq(p.valueSeq)
 
 		iter := node.ChildIter()
 		offset := 0
@@ -125,11 +122,11 @@ func fillFirstAndSibling(p *Predictor) {
 			child := iter.Get()
 			nodeStack = append(nodeStack, child)
 
-			indexedChild := &IndexedNode{
+			indexedChild := &data.IndexedNode{
 				Node:  child,
 				Index: offset,
 			}
-			indexedChildSeq.seq = append(indexedChildSeq.seq, indexedChild)
+			indexedChildSeq.Append(indexedChild)
 
 			offset++
 		}
@@ -137,11 +134,11 @@ func fillFirstAndSibling(p *Predictor) {
 		sort.Sort(indexedChildSeq)
 
 		if indexedChildSeq.Len() > 0 {
-			previousChild := indexedChildSeq.seq[0]
+			previousChild := indexedChildSeq.Get(0)
 			p.valueSeq[node.Value-1].First = previousChild.Index
 
 			for offset := 1; offset < indexedChildSeq.Len(); offset++ {
-				indexedChild := indexedChildSeq.seq[offset]
+				indexedChild := indexedChildSeq.Get(offset)
 				p.valueSeq[previousChild.Node.Value-1].Sibling = indexedChild.Index
 
 				previousChild = indexedChild

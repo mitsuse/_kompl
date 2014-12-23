@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"io"
 
+	"github.com/mitsuse/kompl/predictor/data"
 	"github.com/mitsuse/kompl/trie"
 )
 
@@ -39,13 +40,13 @@ func Load(reader io.Reader) (*Predictor, error) {
 	return p, nil
 }
 
-func loadValueSeq(reader io.Reader) ([]*Value, error) {
+func loadValueSeq(reader io.Reader) ([]*data.Value, error) {
 	var valueSeqSize int64
 	if err := binary.Read(reader, binary.LittleEndian, &valueSeqSize); err != nil {
 		return nil, err
 	}
 
-	valueSeq := make([]*Value, valueSeqSize)
+	valueSeq := make([]*data.Value, valueSeqSize)
 	for i := 0; i < len(valueSeq); i++ {
 		value, err := loadValue(reader)
 		if err != nil {
@@ -58,7 +59,7 @@ func loadValueSeq(reader io.Reader) ([]*Value, error) {
 	return valueSeq, nil
 }
 
-func loadValue(reader io.Reader) (*Value, error) {
+func loadValue(reader io.Reader) (*data.Value, error) {
 	var count int64
 	var maxCount int64
 	var first int64
@@ -80,7 +81,7 @@ func loadValue(reader io.Reader) (*Value, error) {
 		return nil, err
 	}
 
-	value := &Value{
+	value := &data.Value{
 		Count:    int(count),
 		MaxCount: int(maxCount),
 		First:    int(first),

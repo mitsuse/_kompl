@@ -9,7 +9,7 @@ type Predictor struct {
 	wordSize  int
 	wordTrie  *trie.Trie
 	ngramTrie *trie.Trie
-	valueSeq  []*Value
+	valueSeq  []*data.Value
 }
 
 func (p *Predictor) Predict(context []string, prefix string, k int) []string {
@@ -122,36 +122,4 @@ func (p *Predictor) getSibgling(candidate *data.Candidate) (*data.Candidate, boo
 	)
 
 	return siblingCandidate, true
-}
-
-type Value struct {
-	Count    int
-	MaxCount int
-	First    int
-	Sibling  int
-}
-
-type IndexedNode struct {
-	Node  *trie.Trie
-	Index int
-}
-
-type IndexedNodeSeq struct {
-	seq      []*IndexedNode
-	valueSeq []*Value
-}
-
-func (s *IndexedNodeSeq) Len() int {
-	return len(s.seq)
-}
-
-func (s *IndexedNodeSeq) Less(i, j int) bool {
-	iCount := s.valueSeq[s.seq[i].Node.Value-1].Count
-	jCount := s.valueSeq[s.seq[j].Node.Value-1].Count
-
-	return iCount < jCount
-}
-
-func (s *IndexedNodeSeq) Swap(i, j int) {
-	s.seq[i], s.seq[j] = s.seq[j], s.seq[i]
 }
