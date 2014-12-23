@@ -6,8 +6,9 @@ import (
 )
 
 func ScanTokens(data []byte, atEOF bool) (advance int, token []byte, err error) {
-	// Skip leading spaces.
 	start := 0
+
+	// Skip leading spaces.
 	for width := 0; start < len(data); start += width {
 		var r rune
 		r, width = utf8.DecodeRune(data[start:])
@@ -16,11 +17,16 @@ func ScanTokens(data []byte, atEOF bool) (advance int, token []byte, err error) 
 		}
 	}
 
+	// Check wheter the first charactor is a symbol or not.
+	if r, width := utf8.DecodeRune(data); IsSymbol(r) {
+		return width, data[:width], nil
+	}
+
 	// Scan until space, marking end of word.
 	for width, i := 0, start; i < len(data); i += width {
 		var r rune
 		r, width = utf8.DecodeRune(data[i:])
-		if unicode.IsSpace(r) {
+		if unicode.IsSpace(r) || IsSymbol(r) {
 			return i + width, data[start:i], nil
 		}
 	}
