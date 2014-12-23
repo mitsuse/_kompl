@@ -29,9 +29,9 @@ func NewBuildCommand() cli.Command {
 			},
 
 			cli.StringFlag{
-				Name:  "raw,r",
-				Value: "predictor.kompl",
-				Usage: "The input path of a word-segmented corpus.",
+				Name:  "corpus,c",
+				Value: "corpus.raw",
+				Usage: "The input path of a raw corpus.",
 			},
 		},
 	}
@@ -46,14 +46,14 @@ func buildAction(context *cli.Context) {
 		return
 	}
 
-	rawFile, err := os.Open(context.String("raw"))
+	corpusFile, err := os.Open(context.String("corpus"))
 	if err != nil {
 		PrintError(ERROR_LOADING_CORPUS, err)
 		return
 	}
-	defer rawFile.Close()
+	defer corpusFile.Close()
 
-	p, err := predictor.Build(order, rawFile)
+	p, err := predictor.Build(order, corpusFile)
 	if err != nil {
 		PrintError(ERROR_BUILDING_PREDICTOR, err)
 		return
