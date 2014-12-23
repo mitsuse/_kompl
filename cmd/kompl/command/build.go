@@ -30,7 +30,7 @@ func NewBuildCommand() cli.Command {
 
 			cli.StringFlag{
 				Name:  "raw,r",
-				Value: "predictor.kompl",
+				Value: "corpus.raw",
 				Usage: "The input path of a word-segmented corpus.",
 			},
 		},
