@@ -30,3 +30,7 @@ func ScanTokens(data []byte, atEOF bool) (advance int, token []byte, err error) 
 	// Request more data.
 	return start, nil, nil
 }
+
+func IsSymbol(char rune) bool {
+	return symbolRegexp.MatchString(string(char))
+}
