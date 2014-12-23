@@ -31,7 +31,7 @@ func (s *Server) Predictor() *predictor.Predictor {
 }
 
 func (s *Server) Run() error {
-	http.HandleFunc("/", s.handler)
+	http.HandleFunc("/candidates", s.getCandidates)
 	address := fmt.Sprintf(":%s", s.Port())
 
 	return http.ListenAndServe(address, nil)

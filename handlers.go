@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func (s *Server) handler(writer http.ResponseWriter, requst *http.Request) {
+func (s *Server) getCandidates(writer http.ResponseWriter, requst *http.Request) {
 	header := writer.Header()
 	header.Set("Content-Type", "application/json")
 
