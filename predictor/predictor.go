@@ -1,9 +1,6 @@
 package predictor
 
 import (
-	"encoding/binary"
-	"io"
-
 	"github.com/mitsuse/kompl/trie"
 )
 
@@ -12,49 +9,6 @@ type Predictor struct {
 	wordTrie  *trie.Trie
 	ngramTrie *trie.Trie
 	valueSeq  []*Value
-}
-
-func (p *Predictor) Dump(writer io.Writer) error {
-	if err := binary.Write(writer, binary.LittleEndian, int64(p.wordSize)); err != nil {
-		return err
-	}
-
-	if err := p.wordTrie.Deflate(writer); err != nil {
-		return err
-	}
-
-	if err := p.ngramTrie.Deflate(writer); err != nil {
-		return err
-	}
-
-	valueSeqSize := int64(len(p.valueSeq))
-	if err := binary.Write(writer, binary.LittleEndian, valueSeqSize); err != nil {
-		return err
-	}
-
-	for _, value := range p.valueSeq {
-		err := binary.Write(writer, binary.LittleEndian, int64(value.Count))
-		if err != nil {
-			return err
-		}
-
-		err = binary.Write(writer, binary.LittleEndian, int64(value.MaxCount))
-		if err != nil {
-			return err
-		}
-
-		err = binary.Write(writer, binary.LittleEndian, int64(value.First))
-		if err != nil {
-			return err
-		}
-
-		err = binary.Write(writer, binary.LittleEndian, int64(value.Sibling))
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
 }
 
 func (p *Predictor) Predict(context []string, prefix string, k int) []string {

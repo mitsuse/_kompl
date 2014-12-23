@@ -41,7 +41,7 @@ func buildAction(context *cli.Context) {
 	}
 	defer rawFile.Close()
 
-	predictor, err := predictor.Build(rawFile)
+	p, err := predictor.Build(rawFile)
 	if err != nil {
 		PrintError(ERROR_BUILDING_PREDICTOR, err)
 		return
@@ -58,7 +58,7 @@ func buildAction(context *cli.Context) {
 	gzipWriter := gzip.NewWriter(predictorFile)
 	defer gzipWriter.Close()
 
-	if err := predictor.Dump(gzipWriter); err != nil {
+	if err := predictor.Dump(p, gzipWriter); err != nil {
 		PrintError(ERROR_WRITING_PREDICTOR, err)
 		return
 	}
