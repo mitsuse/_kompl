@@ -23,3 +23,14 @@ func (s *Server) getCandidates(writer http.ResponseWriter, requst *http.Request)
 	encoder := json.NewEncoder(writer)
 	encoder.Encode(candSeq)
 }
+
+func (s *Server) getDescription(writer http.ResponseWriter, requst *http.Request) {
+	header := writer.Header()
+	header.Set("Content-Type", "application/json")
+
+	descMap := make(map[string]interface{})
+	descMap["order"] = s.Predictor().Order()
+
+	encoder := json.NewEncoder(writer)
+	encoder.Encode(descMap)
+}
