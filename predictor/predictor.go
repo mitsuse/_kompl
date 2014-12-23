@@ -1,6 +1,7 @@
 package predictor
 
 import (
+	"github.com/mitsuse/kompl/predictor/data"
 	"github.com/mitsuse/kompl/trie"
 )
 
@@ -46,10 +47,10 @@ func (p *Predictor) encode(context []string, prefix string) []int32 {
 func (p *Predictor) generateCandidates(prefix string, node *trie.Trie, k int) []string {
 	candidateSeq := make([]string, 0, k)
 
-	queue := NewQueue()
+	queue := data.NewQueue()
 
 	value := p.valueSeq[node.Value]
-	candidate := NewCandidate(prefix, node, nil, value.Count)
+	candidate := data.NewCandidate(prefix, node, nil, value.Count)
 	queue.Push(candidate)
 
 	for queue.Len() > 0 {
@@ -75,48 +76,48 @@ func (p *Predictor) generateCandidates(prefix string, node *trie.Trie, k int) []
 	return candidateSeq
 }
 
-func (p *Predictor) getFirst(candidate *Candidate) (*Candidate, bool) {
-	parentValue := p.valueSeq[candidate.node.Value-1]
+func (p *Predictor) getFirst(candidate *data.Candidate) (*data.Candidate, bool) {
+	parentValue := p.valueSeq[candidate.Node().Value-1]
 
-	childNode, exist := candidate.node.GetChildByOffset(parentValue.First)
+	childNode, exist := candidate.Node().GetChildByOffset(parentValue.First)
 	if !exist {
 		return nil, false
 	}
 
 	childValue := p.valueSeq[childNode.Value-1]
-	childWord := string(append([]int32(candidate.word), childNode.Char()))
+	childWord := string(append([]int32(candidate.Word()), childNode.Char()))
 
-	childCandidate := NewCandidate(
+	childCandidate := data.NewCandidate(
 		childWord,
 		childNode,
-		candidate.node,
+		candidate.Node(),
 		childValue.Count,
 	)
 
 	return childCandidate, true
 }
 
-func (p *Predictor) getSibgling(candidate *Candidate) (*Candidate, bool) {
-	nodeValue := p.valueSeq[candidate.node.Value-1]
+func (p *Predictor) getSibgling(candidate *data.Candidate) (*data.Candidate, bool) {
+	nodeValue := p.valueSeq[candidate.Node().Value-1]
 
-	if candidate.parent == nil {
+	if candidate.Parent() == nil {
 		return nil, false
 	}
 
-	siblingNode, exist := candidate.parent.GetChildByOffset(nodeValue.Sibling)
+	siblingNode, exist := candidate.Parent().GetChildByOffset(nodeValue.Sibling)
 	if !exist {
 		return nil, false
 	}
 
-	nodeWord := []int32(candidate.word)
+	nodeWord := []int32(candidate.Word())
 
 	siblingValue := p.valueSeq[siblingNode.Value-1]
 	siblingWord := string(append(nodeWord[:len(nodeWord)-1], siblingNode.Char()))
 
-	siblingCandidate := NewCandidate(
+	siblingCandidate := data.NewCandidate(
 		siblingWord,
 		siblingNode,
-		candidate.parent,
+		candidate.Parent(),
 		siblingValue.Count,
 	)
 

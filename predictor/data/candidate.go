@@ -1,4 +1,4 @@
-package predictor
+package data
 
 import (
 	"github.com/mitsuse/kompl/trie"

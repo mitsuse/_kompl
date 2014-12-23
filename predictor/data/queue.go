@@ -1,4 +1,4 @@
-package predictor
+package data
 
 import (
 	"sort"
