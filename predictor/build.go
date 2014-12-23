@@ -4,6 +4,7 @@ import (
 	"io"
 	"sort"
 
+	"github.com/mitsuse/kompl/ngram"
 	"github.com/mitsuse/kompl/predictor/data"
 	"github.com/mitsuse/kompl/trie"
 )
@@ -16,7 +17,7 @@ func Build(reader io.Reader) (*Predictor, error) {
 		ngramTrie: trie.New(),
 	}
 
-	iterator := data.NewNgramIterator(3, reader)
+	iterator := ngram.NewNgramIterator(3, reader)
 	for iterator.Iterate() {
 		// TODO: Support for the N-grams which have start symbols as context.
 		wordSeq := iterator.Get()
