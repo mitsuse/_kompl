@@ -11,6 +11,7 @@ import (
 
 func Build(order int, reader io.Reader) (*Predictor, error) {
 	p := &Predictor{
+		order:     order,
 		wordSize:  0,
 		wordTrie:  trie.New(),
 		ngramTrie: trie.New(),

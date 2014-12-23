@@ -6,6 +6,10 @@ import (
 )
 
 func Dump(p *Predictor, writer io.Writer) error {
+	if err := binary.Write(writer, binary.LittleEndian, int64(p.order)); err != nil {
+		return err
+	}
+
 	if err := binary.Write(writer, binary.LittleEndian, int64(p.wordSize)); err != nil {
 		return err
 	}
