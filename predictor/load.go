@@ -9,8 +9,12 @@ import (
 )
 
 func Load(reader io.Reader) (*Predictor, error) {
-	var wordSize int64
+	var order int64
+	if err := binary.Read(reader, binary.LittleEndian, &order); err != nil {
+		return nil, err
+	}
 
+	var wordSize int64
 	if err := binary.Read(reader, binary.LittleEndian, &wordSize); err != nil {
 		return nil, err
 	}
@@ -31,6 +35,7 @@ func Load(reader io.Reader) (*Predictor, error) {
 	}
 
 	p := &Predictor{
+		order:     int(order),
 		wordSize:  int(wordSize),
 		wordTrie:  wordTrie,
 		ngramTrie: ngramTrie,

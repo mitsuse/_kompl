@@ -6,10 +6,15 @@ import (
 )
 
 type Predictor struct {
+	order     int
 	wordSize  int
 	wordTrie  *trie.Trie
 	ngramTrie *trie.Trie
 	valueSeq  []*data.Value
+}
+
+func (p *Predictor) Order() int {
+	return p.order
 }
 
 func (p *Predictor) Predict(context []string, prefix string, k int) []string {
