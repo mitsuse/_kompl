@@ -7,7 +7,7 @@ import (
 	"github.com/mitsuse/kompl/trie"
 )
 
-func LoadPredictor(reader io.Reader) (*Predictor, error) {
+func Load(reader io.Reader) (*Predictor, error) {
 	var wordSize int64
 
 	if err := binary.Read(reader, binary.LittleEndian, &wordSize); err != nil {

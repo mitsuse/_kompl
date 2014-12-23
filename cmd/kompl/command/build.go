@@ -41,7 +41,7 @@ func buildAction(context *cli.Context) {
 	}
 	defer rawFile.Close()
 
-	predictor, err := predictor.BuildPredictor(rawFile)
+	predictor, err := predictor.Build(rawFile)
 	if err != nil {
 		PrintError(ERROR_BUILDING_PREDICTOR, err)
 		return

@@ -49,7 +49,7 @@ func runAction(context *cli.Context) {
 	}
 	defer gzipReader.Close()
 
-	predictor, err := predictor.LoadPredictor(gzipReader)
+	predictor, err := predictor.Load(gzipReader)
 	if err != nil {
 		PrintError(ERROR_LOADING_PREDICTOR, err)
 		return

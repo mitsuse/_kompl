@@ -8,7 +8,7 @@ import (
 )
 
 // TODO: Get the order of N-gram as a argument..
-func BuildPredictor(reader io.Reader) (*Predictor, error) {
+func Build(reader io.Reader) (*Predictor, error) {
 	p := &Predictor{
 		wordSize:  0,
 		wordTrie:  trie.New(),
