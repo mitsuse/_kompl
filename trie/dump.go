@@ -1,8 +1,9 @@
 package trie
 
 import (
-	"encoding/binary"
 	"io"
+
+	"github.com/mitsuse/kompl/binary"
 )
 
 func Dump(t *Trie, writer io.Writer) error {
@@ -36,17 +37,14 @@ func Dump(t *Trie, writer io.Writer) error {
 }
 
 func (t *Trie) dumpNode(writer io.Writer) error {
-	endian := binary.LittleEndian
+	errWriter := binary.NewWriter(writer)
 
-	if err := binary.Write(writer, endian, t.char); err != nil {
-		return err
-	}
+	errWriter.Write(t.char)
+	errWriter.Write(t.Value)
+	errWriter.Write(int64(t.Value))
+	errWriter.Write(int64(len(t.childSeq)))
 
-	if err := binary.Write(writer, endian, int64(t.Value)); err != nil {
-		return err
-	}
-
-	if err := binary.Write(writer, endian, int64(len(t.childSeq))); err != nil {
+	if err := errWriter.Error(); err != nil {
 		return err
 	}
 

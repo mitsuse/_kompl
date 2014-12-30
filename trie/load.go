@@ -1,8 +1,9 @@
 package trie
 
 import (
-	"encoding/binary"
 	"io"
+
+	"github.com/mitsuse/kompl/binary"
 )
 
 func Load(reader io.Reader) (*Trie, error) {
@@ -40,20 +41,17 @@ func Load(reader io.Reader) (*Trie, error) {
 }
 
 func loadNode(reader io.Reader) (*Trie, error) {
-	endian := binary.LittleEndian
-
 	var char int32
-	if err := binary.Read(reader, endian, &char); err != nil {
-		return nil, err
-	}
-
 	var value int64
-	if err := binary.Read(reader, endian, &value); err != nil {
-		return nil, err
-	}
-
 	var childSeqSize int64
-	if err := binary.Read(reader, endian, &childSeqSize); err != nil {
+
+	errReader := binary.NewReader(reader)
+
+	errReader.Read(&char)
+	errReader.Read(&value)
+	errReader.Read(&childSeqSize)
+
+	if err := errReader.Error(); err != nil {
 		return nil, err
 	}
 
