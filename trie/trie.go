@@ -22,8 +22,8 @@ func New() (t *Trie) {
 	return t
 }
 
-func Inflate(reader io.Reader) (*Trie, error) {
-	t, err := inflateNode(reader)
+func Load(reader io.Reader) (*Trie, error) {
+	t, err := loadNode(reader)
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +36,7 @@ func Inflate(reader io.Reader) (*Trie, error) {
 		offset := offsetStack[len(offsetStack)-1]
 
 		if offset < node.childSeq.Len() {
-			child, err := inflateNode(reader)
+			child, err := loadNode(reader)
 			if err != nil {
 				return nil, err
 			}
@@ -56,7 +56,7 @@ func Inflate(reader io.Reader) (*Trie, error) {
 	return t, nil
 }
 
-func inflateNode(reader io.Reader) (*Trie, error) {
+func loadNode(reader io.Reader) (*Trie, error) {
 	endian := binary.LittleEndian
 
 	var char int32
@@ -83,11 +83,11 @@ func inflateNode(reader io.Reader) (*Trie, error) {
 	return t, nil
 }
 
-func (t *Trie) Deflate(writer io.Writer) error {
+func (t *Trie) Dump(writer io.Writer) error {
 	nodeStack := []*Trie{t}
 	offsetStack := []int{-1}
 
-	if err := t.deflateNode(writer); err != nil {
+	if err := t.dumpNode(writer); err != nil {
 		return err
 	}
 
@@ -98,7 +98,7 @@ func (t *Trie) Deflate(writer io.Writer) error {
 
 		if offset < node.childSeq.Len() {
 			child := node.childSeq[offset]
-			if err := child.deflateNode(writer); err != nil {
+			if err := child.dumpNode(writer); err != nil {
 				return err
 			}
 
@@ -113,7 +113,7 @@ func (t *Trie) Deflate(writer io.Writer) error {
 	return nil
 }
 
-func (t *Trie) deflateNode(writer io.Writer) error {
+func (t *Trie) dumpNode(writer io.Writer) error {
 	endian := binary.LittleEndian
 
 	if err := binary.Write(writer, endian, t.char); err != nil {

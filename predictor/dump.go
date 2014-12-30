@@ -14,11 +14,11 @@ func Dump(p *Predictor, writer io.Writer) error {
 		return err
 	}
 
-	if err := p.wordTrie.Deflate(writer); err != nil {
+	if err := p.wordTrie.Dump(writer); err != nil {
 		return err
 	}
 
-	if err := p.ngramTrie.Deflate(writer); err != nil {
+	if err := p.ngramTrie.Dump(writer); err != nil {
 		return err
 	}
 

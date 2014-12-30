@@ -19,12 +19,12 @@ func Load(reader io.Reader) (*Predictor, error) {
 		return nil, err
 	}
 
-	wordTrie, err := trie.Inflate(reader)
+	wordTrie, err := trie.Load(reader)
 	if err != nil {
 		return nil, err
 	}
 
-	ngramTrie, err := trie.Inflate(reader)
+	ngramTrie, err := trie.Load(reader)
 	if err != nil {
 		return nil, err
 	}
