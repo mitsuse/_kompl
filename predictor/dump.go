@@ -16,14 +16,6 @@ func Dump(p *Predictor, writer io.Writer) error {
 		return err
 	}
 
-	if err := trie.Dump(p.wordTrie, writer); err != nil {
-		return err
-	}
-
-	if err := trie.Dump(p.ngramTrie, writer); err != nil {
-		return err
-	}
-
 	valueSeqSize := int64(len(p.valueSeq))
 	if err := binary.Write(writer, binary.LittleEndian, valueSeqSize); err != nil {
 		return err
@@ -49,6 +41,14 @@ func Dump(p *Predictor, writer io.Writer) error {
 		if err != nil {
 			return err
 		}
+	}
+
+	if err := trie.Dump(p.wordTrie, writer); err != nil {
+		return err
+	}
+
+	if err := trie.Dump(p.ngramTrie, writer); err != nil {
+		return err
 	}
 
 	return nil
