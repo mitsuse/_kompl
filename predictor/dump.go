@@ -3,6 +3,8 @@ package predictor
 import (
 	"encoding/binary"
 	"io"
+
+	"github.com/mitsuse/kompl/trie"
 )
 
 func Dump(p *Predictor, writer io.Writer) error {
@@ -14,11 +16,11 @@ func Dump(p *Predictor, writer io.Writer) error {
 		return err
 	}
 
-	if err := p.wordTrie.Dump(writer); err != nil {
+	if err := trie.Dump(p.wordTrie, writer); err != nil {
 		return err
 	}
 
-	if err := p.ngramTrie.Dump(writer); err != nil {
+	if err := trie.Dump(p.ngramTrie, writer); err != nil {
 		return err
 	}
 

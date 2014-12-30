@@ -5,7 +5,7 @@ import (
 	"io"
 )
 
-func (t *Trie) Dump(writer io.Writer) error {
+func Dump(t *Trie, writer io.Writer) error {
 	nodeStack := []*Trie{t}
 	offsetStack := []int{-1}
 
