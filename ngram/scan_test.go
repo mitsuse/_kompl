@@ -79,3 +79,31 @@ func TestIsNotSymbol(t *testing.T) {
 		}
 	}
 }
+
+type ScanTokenTest struct {
+	Advance int
+	Token   []byte
+	Err     error
+}
+
+func TestScanTokenSucceed(t *testing.T) {
+	testSeq := []*ScanTokenTest{
+	// TODO: Write test cases.
+	}
+
+	// TODO: Implement this.
+	for _, test := range testSeq {
+		_ = test
+	}
+}
+
+func TestScanTokenFail(t *testing.T) {
+	testSeq := []*ScanTokenTest{
+	// TODO: Write test cases.
+	}
+
+	// TODO: Implement this.
+	for _, test := range testSeq {
+		_ = test
+	}
+}
