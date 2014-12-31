@@ -22,7 +22,8 @@ fi
 
 for package in ${package_list[@]}
 do
-    cover_path=${base_path}/coverprofile/$(basename ${package}).coverprofile
+    cover_name=$(echo ${package} | sed -e "s/\//__/g").coverprofile
+    cover_path=${base_path}/coverprofile/${cover_name}
     go test -covermode=count -coverprofile ${cover_path} ${package}
 done
 
