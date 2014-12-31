@@ -10,8 +10,8 @@ import (
 func Dump(p *Predictor, writer io.Writer) error {
 	errWriter := binary.NewWriter(writer)
 
-	errWriter.Write(p.order)
-	errWriter.Write(p.wordSize)
+	errWriter.Write(int64(p.order))
+	errWriter.Write(int64(p.wordSize))
 	errWriter.Write(int64(len(p.valueSeq)))
 
 	for _, value := range p.valueSeq {
