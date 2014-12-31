@@ -1,26 +1,23 @@
 package predictor
 
 import (
-	"encoding/binary"
 	"io"
 
+	"github.com/mitsuse/kompl/binary"
 	"github.com/mitsuse/kompl/predictor/data"
 	"github.com/mitsuse/kompl/trie"
 )
 
 func Load(reader io.Reader) (*Predictor, error) {
 	var order int64
-	if err := binary.Read(reader, binary.LittleEndian, &order); err != nil {
-		return nil, err
-	}
-
 	var wordSize int64
-	if err := binary.Read(reader, binary.LittleEndian, &wordSize); err != nil {
-		return nil, err
-	}
 
-	valueSeq, err := loadValueSeq(reader)
-	if err != nil {
+	errReader := binary.NewReader(reader)
+	errReader.Read(&order)
+	errReader.Read(&wordSize)
+	valueSeq := loadValueSeq(errReader)
+
+	if err := errReader.Error(); err != nil {
 		return nil, err
 	}
 
@@ -45,46 +42,28 @@ func Load(reader io.Reader) (*Predictor, error) {
 	return p, nil
 }
 
-func loadValueSeq(reader io.Reader) ([]*data.Value, error) {
+func loadValueSeq(reader *binary.Reader) []*data.Value {
 	var valueSeqSize int64
-	if err := binary.Read(reader, binary.LittleEndian, &valueSeqSize); err != nil {
-		return nil, err
-	}
+	reader.Read(&valueSeqSize)
 
 	valueSeq := make([]*data.Value, valueSeqSize)
 	for i := 0; i < len(valueSeq); i++ {
-		value, err := loadValue(reader)
-		if err != nil {
-			return nil, err
-		}
-
-		valueSeq[i] = value
+		valueSeq[i] = loadValue(reader)
 	}
 
-	return valueSeq, nil
+	return valueSeq
 }
 
-func loadValue(reader io.Reader) (*data.Value, error) {
+func loadValue(reader *binary.Reader) *data.Value {
 	var count int64
 	var maxCount int64
 	var first int64
 	var sibling int64
 
-	if err := binary.Read(reader, binary.LittleEndian, &count); err != nil {
-		return nil, err
-	}
-
-	if err := binary.Read(reader, binary.LittleEndian, &maxCount); err != nil {
-		return nil, err
-	}
-
-	if err := binary.Read(reader, binary.LittleEndian, &first); err != nil {
-		return nil, err
-	}
-
-	if err := binary.Read(reader, binary.LittleEndian, &sibling); err != nil {
-		return nil, err
-	}
+	reader.Read(&count)
+	reader.Read(&maxCount)
+	reader.Read(&first)
+	reader.Read(&sibling)
 
 	value := &data.Value{
 		Count:    int(count),
@@ -93,5 +72,5 @@ func loadValue(reader io.Reader) (*data.Value, error) {
 		Sibling:  int(sibling),
 	}
 
-	return value, nil
+	return value
 }
