@@ -15,6 +15,8 @@ package_list=(
 if [ ! -d ${base_path}/coverprofile ]
 then 
     mkdir ${base_path}/coverprofile
+else
+    rm ${base_path}/coverprofile/*.coverprofile
 fi
 
 for package in ${package_list[@]}
