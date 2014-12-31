@@ -9,6 +9,7 @@ package_list=(
     ${base_package}/cmd/kompl
     ${base_package}/ngram
     ${base_package}/predictor
+    ${base_package}/predictor/data
     ${base_package}/trie
 )
 
