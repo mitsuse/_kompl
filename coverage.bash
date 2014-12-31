@@ -9,6 +9,7 @@ package_list=(
     ${base_package}/cmd/kompl
     ${base_package}/ngram
     ${base_package}/predictor
+    ${base_package}/predictor/data
     ${base_package}/trie
 )
 
@@ -21,7 +22,8 @@ fi
 
 for package in ${package_list[@]}
 do
-    cover_path=${base_path}/coverprofile/$(basename ${package}).coverprofile
+    cover_name=$(echo ${package} | sed -e "s/\//__/g").coverprofile
+    cover_path=${base_path}/coverprofile/${cover_name}
     go test -covermode=count -coverprofile ${cover_path} ${package}
 done
 
