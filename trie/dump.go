@@ -40,7 +40,6 @@ func (t *Trie) dumpNode(writer io.Writer) error {
 	errWriter := binary.NewWriter(writer)
 
 	errWriter.Write(t.char)
-	errWriter.Write(t.Value)
 	errWriter.Write(int64(t.Value))
 	errWriter.Write(int64(len(t.childSeq)))
 
