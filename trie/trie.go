@@ -1,8 +1,6 @@
 package trie
 
 import (
-	"encoding/binary"
-	"io"
 	"sort"
 )
 
@@ -20,115 +18,6 @@ func New() (t *Trie) {
 	}
 
 	return t
-}
-
-func Inflate(reader io.Reader) (*Trie, error) {
-	t, err := inflateNode(reader)
-	if err != nil {
-		return nil, err
-	}
-
-	nodeStack := []*Trie{t}
-	offsetStack := []int{0}
-
-	for len(nodeStack) > 0 {
-		node := nodeStack[len(nodeStack)-1]
-		offset := offsetStack[len(offsetStack)-1]
-
-		if offset < node.childSeq.Len() {
-			child, err := inflateNode(reader)
-			if err != nil {
-				return nil, err
-			}
-
-			node.childSeq[offset] = child
-			offset++
-			offsetStack[len(offsetStack)-1] = offset
-
-			nodeStack = append(nodeStack, child)
-			offsetStack = append(offsetStack, 0)
-		} else {
-			nodeStack = nodeStack[:len(nodeStack)-1]
-			offsetStack = offsetStack[:len(offsetStack)-1]
-		}
-	}
-
-	return t, nil
-}
-
-func inflateNode(reader io.Reader) (*Trie, error) {
-	endian := binary.LittleEndian
-
-	var char int32
-	if err := binary.Read(reader, endian, &char); err != nil {
-		return nil, err
-	}
-
-	var value int64
-	if err := binary.Read(reader, endian, &value); err != nil {
-		return nil, err
-	}
-
-	var childSeqSize int64
-	if err := binary.Read(reader, endian, &childSeqSize); err != nil {
-		return nil, err
-	}
-
-	t := &Trie{
-		char:     char,
-		childSeq: make([]*Trie, childSeqSize),
-		Value:    int(value),
-	}
-
-	return t, nil
-}
-
-func (t *Trie) Deflate(writer io.Writer) error {
-	nodeStack := []*Trie{t}
-	offsetStack := []int{-1}
-
-	if err := t.deflateNode(writer); err != nil {
-		return err
-	}
-
-	for len(nodeStack) > 0 {
-		offsetStack[len(offsetStack)-1]++
-		node := nodeStack[len(nodeStack)-1]
-		offset := offsetStack[len(offsetStack)-1]
-
-		if offset < node.childSeq.Len() {
-			child := node.childSeq[offset]
-			if err := child.deflateNode(writer); err != nil {
-				return err
-			}
-
-			nodeStack = append(nodeStack, child)
-			offsetStack = append(offsetStack, -1)
-		} else {
-			nodeStack = nodeStack[:len(nodeStack)-1]
-			offsetStack = offsetStack[:len(offsetStack)-1]
-		}
-	}
-
-	return nil
-}
-
-func (t *Trie) deflateNode(writer io.Writer) error {
-	endian := binary.LittleEndian
-
-	if err := binary.Write(writer, endian, t.char); err != nil {
-		return err
-	}
-
-	if err := binary.Write(writer, endian, int64(t.Value)); err != nil {
-		return err
-	}
-
-	if err := binary.Write(writer, endian, int64(len(t.childSeq))); err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func (t *Trie) Char() int32 {
