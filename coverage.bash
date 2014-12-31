@@ -20,7 +20,7 @@ fi
 for package in ${package_list[@]}
 do
     cover_path=${base_path}/coverprofile/$(basename ${package}).coverprofile
-    go test -coverprofile ${cover_path} ${package}
+    go test -covermode=count -coverprofile ${cover_path} ${package}
 done
 
 cd ${base_path}/coverprofile && gover
