@@ -23,5 +23,4 @@ do
     go test -coverprofile ${cover_path} ${package}
 done
 
-
 cd ${base_path}/coverprofile && gover
