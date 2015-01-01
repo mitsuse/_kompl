@@ -1,6 +1,7 @@
 package ngram
 
 import (
+	"bytes"
 	"testing"
 )
 
@@ -80,30 +81,115 @@ func TestIsNotSymbol(t *testing.T) {
 	}
 }
 
-type ScanTokenTest struct {
+type ScanTokensTest struct {
+	Data    []byte
+	AtEOF   bool
 	Advance int
 	Token   []byte
-	Err     error
 }
 
-func TestScanTokenSucceed(t *testing.T) {
-	testSeq := []*ScanTokenTest{
-	// TODO: Write test cases.
+func TestScanTokensSucceed(t *testing.T) {
+	testSeq := []*ScanTokensTest{
+		&ScanTokensTest{
+			Data: []byte("aaa bbb ccc"), AtEOF: false,
+			Advance: 3, Token: []byte("aaa"),
+		},
+
+		&ScanTokensTest{
+			Data: []byte("   aaa bbb ccc"), AtEOF: false,
+			Advance: 6, Token: []byte("aaa"),
+		},
+
+		&ScanTokensTest{
+			Data: []byte("aaa    bbb ccc"), AtEOF: false,
+			Advance: 3, Token: []byte("aaa"),
+		},
+
+		&ScanTokensTest{
+			Data: []byte("aa(a bbb ccc"), AtEOF: false,
+			Advance: 2, Token: []byte("aa"),
+		},
+
+		&ScanTokensTest{
+			Data: []byte("[aaa bbb ccc"), AtEOF: false,
+			Advance: 1, Token: []byte("["),
+		},
+
+		&ScanTokensTest{
+			Data: []byte("  :aaa bbb ccc"), AtEOF: false,
+			Advance: 3, Token: []byte(":"),
+		},
+
+		&ScanTokensTest{
+			Data: []byte("aaa"), AtEOF: false,
+			Advance: 0, Token: nil,
+		},
+
+		&ScanTokensTest{
+			Data: []byte("  aaa"), AtEOF: false,
+			Advance: 0, Token: nil,
+		},
+
+		&ScanTokensTest{
+			Data: []byte("aaa bbb ccc"), AtEOF: true,
+			Advance: 3, Token: []byte("aaa"),
+		},
+
+		&ScanTokensTest{
+			Data: []byte("   aaa bbb ccc"), AtEOF: true,
+			Advance: 6, Token: []byte("aaa"),
+		},
+
+		&ScanTokensTest{
+			Data: []byte("aaa    bbb ccc"), AtEOF: true,
+			Advance: 3, Token: []byte("aaa"),
+		},
+
+		&ScanTokensTest{
+			Data: []byte("aa(a bbb ccc"), AtEOF: true,
+			Advance: 2, Token: []byte("aa"),
+		},
+
+		&ScanTokensTest{
+			Data: []byte("[aaa bbb ccc"), AtEOF: true,
+			Advance: 1, Token: []byte("["),
+		},
+
+		&ScanTokensTest{
+			Data: []byte("  :aaa bbb ccc"), AtEOF: true,
+			Advance: 3, Token: []byte(":"),
+		},
+
+		&ScanTokensTest{
+			Data: []byte("aaa"), AtEOF: true,
+			Advance: 3, Token: []byte("aaa"),
+		},
+
+		&ScanTokensTest{
+			Data: []byte("  aaa"), AtEOF: true,
+			Advance: 5, Token: []byte("aaa"),
+		},
 	}
 
-	// TODO: Implement this.
 	for _, test := range testSeq {
-		_ = test
-	}
-}
+		advance, token, err := ScanTokens(test.Data, test.AtEOF)
 
-func TestScanTokenFail(t *testing.T) {
-	testSeq := []*ScanTokenTest{
-	// TODO: Write test cases.
-	}
+		if err != nil {
+			template := "Any error shouldn't be caused: %s"
+			t.Errorf(template, err.Error())
+			return
+		}
 
-	// TODO: Implement this.
-	for _, test := range testSeq {
-		_ = test
+		if advance != test.Advance {
+			template := "%d byte(s) should be read, but %d byte(s) have read."
+			t.Errorf(template, test.Advance, advance)
+			return
+		}
+
+		if bytes.Compare(token, test.Token) != 0 {
+			template := "\"%s\" should be returned, but \"%s\" is returned."
+			t.Errorf(template, test.Token, token)
+			return
+		}
 	}
 }
