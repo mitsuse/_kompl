@@ -127,7 +127,7 @@ func TestScanTokensSucceed(t *testing.T) {
 
 		&ScanTokensTest{
 			Data: []byte("  aaa"), AtEOF: false,
-			Advance: 0, Token: nil,
+			Advance: 2, Token: nil,
 		},
 
 		&ScanTokensTest{
