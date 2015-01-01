@@ -18,8 +18,8 @@ func ScanTokens(data []byte, atEOF bool) (advance int, token []byte, err error) 
 	}
 
 	// Check wheter the first charactor is a symbol or not.
-	if r, width := utf8.DecodeRune(data); IsSymbol(r) {
-		return width, data[:width], nil
+	if r, width := utf8.DecodeRune(data[start:]); IsSymbol(r) {
+		return start + width, data[start : start+width], nil
 	}
 
 	// Scan until space, marking end of word.
@@ -27,7 +27,7 @@ func ScanTokens(data []byte, atEOF bool) (advance int, token []byte, err error) 
 		var r rune
 		r, width = utf8.DecodeRune(data[i:])
 		if unicode.IsSpace(r) || IsSymbol(r) {
-			return i + width, data[start:i], nil
+			return i, data[start:i], nil
 		}
 	}
 
