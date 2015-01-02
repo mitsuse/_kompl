@@ -25,3 +25,37 @@ func TestNew(t *testing.T) {
 		return
 	}
 }
+
+type KeyValueTest struct {
+	Key   string
+	Value int
+	Exist bool
+}
+
+func TestAdd(t *testing.T) {
+	testSeq := []*KeyValueTest{
+		&KeyValueTest{Key: "aaaaa", Value: 0, Exist: false},
+		&KeyValueTest{Key: "aabaa", Value: 1, Exist: false},
+		&KeyValueTest{Key: "aacaa", Value: 2, Exist: false},
+		&KeyValueTest{Key: "a", Value: 3, Exist: true},
+		&KeyValueTest{Key: "aaaba", Value: 4, Exist: false},
+		&KeyValueTest{Key: "ccccc", Value: 5, Exist: false},
+		&KeyValueTest{Key: "ccccccc", Value: 6, Exist: false},
+		&KeyValueTest{Key: "bbb", Value: 7, Exist: false},
+		&KeyValueTest{Key: "aabaa", Value: 8, Exist: true},
+	}
+
+	rootNode := New()
+
+	for _, test := range testSeq {
+		node, found := rootNode.Add([]int32(test.Key))
+
+		if found != test.Exist {
+			template := "The node corresposing to \"%s\" shouldn't have existed."
+			t.Errorf(template, test.Key)
+			return
+		}
+
+		node.Value = test.Value
+	}
+}
