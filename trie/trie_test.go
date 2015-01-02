@@ -74,7 +74,7 @@ func TestAdd(t *testing.T) {
 		node, found := rootNode.Add([]int32(test.Key))
 
 		if found != test.Exist {
-			template := "The node corresposing to \"%s\" shouldn't have existed."
+			template := "The node corresposing to \"%s\" shouldn't exist."
 			t.Errorf(template, test.Key)
 			return
 		}
@@ -102,7 +102,7 @@ func TestGet(t *testing.T) {
 				negation = "shouldn't"
 			}
 
-			template := "The node corresposing to \"%s\" %s have existed."
+			template := "The node corresposing to \"%s\" %s exist."
 			t.Errorf(template, test.Key, negation)
 			return
 		}
