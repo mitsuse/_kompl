@@ -114,3 +114,9 @@ func TestGet(t *testing.T) {
 		}
 	}
 }
+
+func TestFindMax(t *testing.T) {
+}
+
+func TestGetChildByOffset(t *testing.T) {
+}
