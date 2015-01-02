@@ -32,7 +32,7 @@ type KeyValueTest struct {
 	Exist bool
 }
 
-func TestAdd(t *testing.T) {
+func createAddTestSeq() []*KeyValueTest {
 	testSeq := []*KeyValueTest{
 		&KeyValueTest{Key: "aaaaa", Value: 0, Exist: false},
 		&KeyValueTest{Key: "aabaa", Value: 1, Exist: false},
@@ -45,9 +45,13 @@ func TestAdd(t *testing.T) {
 		&KeyValueTest{Key: "aabaa", Value: 8, Exist: true},
 	}
 
+	return testSeq
+}
+
+func TestAdd(t *testing.T) {
 	rootNode := New()
 
-	for _, test := range testSeq {
+	for _, test := range createAddTestSeq() {
 		node, found := rootNode.Add([]int32(test.Key))
 
 		if found != test.Exist {
