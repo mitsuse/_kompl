@@ -48,6 +48,25 @@ func createAddTestSeq() []*KeyValueTest {
 	return testSeq
 }
 
+func createGetTestSeq() []*KeyValueTest {
+	testSeq := []*KeyValueTest{
+		&KeyValueTest{Key: "aaaaa", Value: 0, Exist: true},
+		&KeyValueTest{Key: "aabaa", Value: 8, Exist: true},
+		&KeyValueTest{Key: "aacaa", Value: 2, Exist: true},
+		&KeyValueTest{Key: "a", Value: 3, Exist: true},
+		&KeyValueTest{Key: "aaaba", Value: 4, Exist: true},
+		&KeyValueTest{Key: "ccccc", Value: 5, Exist: true},
+		&KeyValueTest{Key: "ccccccc", Value: 6, Exist: true},
+		&KeyValueTest{Key: "bbb", Value: 7, Exist: true},
+		&KeyValueTest{Key: "aa", Value: 0, Exist: true},
+		&KeyValueTest{Key: "ddd", Value: 0, Exist: false},
+		&KeyValueTest{Key: "aaaad", Value: 0, Exist: false},
+		&KeyValueTest{Key: "cccccc", Value: 0, Exist: true},
+	}
+
+	return testSeq
+}
+
 func TestAdd(t *testing.T) {
 	rootNode := New()
 
@@ -61,5 +80,37 @@ func TestAdd(t *testing.T) {
 		}
 
 		node.Value = test.Value
+	}
+}
+
+func TestGet(t *testing.T) {
+	rootNode := New()
+
+	for _, test := range createAddTestSeq() {
+		node, _ := rootNode.Add([]int32(test.Key))
+		node.Value = test.Value
+	}
+
+	for _, test := range createGetTestSeq() {
+		node, exist := rootNode.Get([]int32(test.Key))
+
+		if exist != test.Exist {
+			var negation string
+			if exist {
+				negation = "should"
+			} else {
+				negation = "shouldn't"
+			}
+
+			template := "The node corresposing to \"%s\" %s have existed."
+			t.Errorf(template, test.Key, negation)
+			return
+		}
+
+		if exist && node.Value != test.Value {
+			template := "The node corresposing to \"%s\" should have %d, but has %d."
+			t.Errorf(template, test.Key, node.Value, test.Value)
+			return
+		}
 	}
 }
