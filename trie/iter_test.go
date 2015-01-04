@@ -131,3 +131,50 @@ func TestChildIter(t *testing.T) {
 		return
 	}
 }
+
+func TestChildIterGet(t *testing.T) {
+	testSeq := []*KeyValueTest{
+		&KeyValueTest{Key: "aaa", Value: 2, Exist: true},
+		&KeyValueTest{Key: "aab", Value: 1, Exist: true},
+		&KeyValueTest{Key: "aac", Value: 4, Exist: true},
+		&KeyValueTest{Key: "aad", Value: 5, Exist: true},
+		&KeyValueTest{Key: "aae", Value: 3, Exist: true},
+	}
+
+	rootNode := New()
+
+	for _, test := range testSeq {
+		node, _ := rootNode.Add([]int32(test.Key))
+		node.Value = test.Value
+	}
+
+	internalNode, _ := rootNode.Get([]int32("aa"))
+
+	iter := internalNode.ChildIter()
+	index := 0
+
+	for iter.HasNext() {
+		if index >= len(testSeq) {
+			message := "Failed to iterate children:Visited too many nodes."
+			t.Errorf(message)
+			return
+		}
+
+		node := iter.Get()
+		test := testSeq[index]
+
+		if node.Value != test.Value {
+			template := "The node corresponding to \"%s\" should have %d, but has %d."
+			t.Errorf(template, test.Key, test.Value, node.Value)
+			return
+		}
+
+		index++
+	}
+
+	if index < len(testSeq) {
+		message := "Failed to iterate children:Visited too less nodes."
+		t.Errorf(message)
+		return
+	}
+}
