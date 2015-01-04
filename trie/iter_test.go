@@ -14,19 +14,19 @@ func TestIter(t *testing.T) {
 	iter := rootNode.Iter()
 
 	if len(iter.nodeSeq) != 1 {
-		message := "The lenght of \"(*TrieIterator).nodeSeq\" should be 1 initially."
+		message := "The lenght of \"(*TrieIter).nodeSeq\" should be 1 initially."
 		t.Errorf(message)
 		return
 	}
 
 	if len(iter.offsetSeq) != 1 {
-		message := "The lenght of \"(*TrieIterator).offsetSeq\" should be 1 initially."
+		message := "The lenght of \"(*TrieIter).offsetSeq\" should be 1 initially."
 		t.Errorf(message)
 		return
 	}
 
 	if iter.node != nil {
-		message := "\"(*TrieIterator).node\" should be \"nil\" initially."
+		message := "\"(*TrieIter).node\" should be \"nil\" initially."
 		t.Errorf(message)
 		return
 	}
