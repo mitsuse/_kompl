@@ -119,4 +119,38 @@ func TestFindMax(t *testing.T) {
 }
 
 func TestGetChildByOffset(t *testing.T) {
+	testSeq := []*KeyValueTest{
+		&KeyValueTest{Key: "aaa", Value: 2, Exist: true},
+		&KeyValueTest{Key: "aab", Value: 1, Exist: true},
+		&KeyValueTest{Key: "aac", Value: 4, Exist: true},
+		&KeyValueTest{Key: "aad", Value: 5, Exist: true},
+		&KeyValueTest{Key: "aae", Value: 3, Exist: true},
+	}
+
+	rootNode := New()
+	for _, test := range testSeq {
+		node, _ := rootNode.Add([]int32(test.Key))
+		node.Value = test.Value
+	}
+
+	internalNode, _ := rootNode.Get([]int32("aa"))
+
+	node, exist := internalNode.GetChildByOffset(3)
+	if !exist {
+		message := "Cannot get a child node with not existing index."
+		t.Errorf(message)
+		return
+	}
+
+	if value := node.Value; value != 5 {
+		template := "The child node should have %d as its \"Value\", but have \"%d\"."
+		t.Errorf(template, 5, value)
+		return
+	}
+
+	if char := node.Char(); char != 'd' {
+		template := "The child node should have %s as its \"Char\", but have \"%s\"."
+		t.Errorf(template, "d", string(char))
+		return
+	}
 }
