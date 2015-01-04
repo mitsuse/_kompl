@@ -149,7 +149,7 @@ func TestFindMax(t *testing.T) {
 	}
 }
 
-func TestGetChildByOffset(t *testing.T) {
+func TestGetChildByOffsetSucceed(t *testing.T) {
 	testSeq := []*KeyValueTest{
 		&KeyValueTest{Key: "aaa", Value: 2, Exist: true},
 		&KeyValueTest{Key: "aab", Value: 1, Exist: true},
@@ -183,5 +183,32 @@ func TestGetChildByOffset(t *testing.T) {
 		template := "The child node should have %s as its \"Char\", but have \"%s\"."
 		t.Errorf(template, "d", string(char))
 		return
+	}
+}
+
+func TestGetChildByOffsetOutOfIndex(t *testing.T) {
+	testSeq := []*KeyValueTest{
+		&KeyValueTest{Key: "aaa", Value: 2, Exist: true},
+		&KeyValueTest{Key: "aab", Value: 1, Exist: true},
+		&KeyValueTest{Key: "aac", Value: 4, Exist: true},
+		&KeyValueTest{Key: "aad", Value: 5, Exist: true},
+		&KeyValueTest{Key: "aae", Value: 3, Exist: true},
+	}
+
+	rootNode := New()
+	for _, test := range testSeq {
+		node, _ := rootNode.Add([]int32(test.Key))
+		node.Value = test.Value
+	}
+
+	internalNode, _ := rootNode.Get([]int32("aa"))
+
+	for _, index := range []int{-1, 10} {
+		_, exist := internalNode.GetChildByOffset(index)
+		if exist {
+			message := "It should fail to get child by invalid offset."
+			t.Errorf(message)
+			return
+		}
 	}
 }
