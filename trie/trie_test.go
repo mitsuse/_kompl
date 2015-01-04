@@ -149,7 +149,7 @@ func TestFindMax(t *testing.T) {
 	}
 }
 
-func TestGetChildByOffset(t *testing.T) {
+func TestGetChildByOffsetSucceed(t *testing.T) {
 	testSeq := []*KeyValueTest{
 		&KeyValueTest{Key: "aaa", Value: 2, Exist: true},
 		&KeyValueTest{Key: "aab", Value: 1, Exist: true},
