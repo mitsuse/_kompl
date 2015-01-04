@@ -31,3 +31,25 @@ func TestIter(t *testing.T) {
 		return
 	}
 }
+
+func TestChildIter(t *testing.T) {
+	rootNode := New()
+
+	for _, test := range createAddTestSeq() {
+		rootNode.Add([]int32(test.Key))
+	}
+
+	iter := rootNode.ChildIter()
+
+	if len(iter.nodeSeq) != len(rootNode.childSeq) {
+		template := "The lenght of \"(*NodeIter).nodeSeq\" should be %d initially."
+		t.Errorf(template, len(rootNode.childSeq))
+		return
+	}
+
+	if iter.offset != -1 {
+		message := "\"(*NodeIter).offset\" should be -1 initially."
+		t.Errorf(message)
+		return
+	}
+}
