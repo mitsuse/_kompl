@@ -1,7 +1,7 @@
 # Kompl
 
 [![License](https://img.shields.io/badge/license-MIT-yellowgreen.svg)](http://opensource.org/licenses/MIT)
-[![GoDoc](http://godoc.org/github.com/mitsuse/kompl?status.svg)](http://godoc.org/github.com/mitsuse/kompl)
+[![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg)](http://godoc.org/github.com/mitsuse/kompl)
 [![Circle CI](https://circleci.com/gh/mitsuse/kompl.svg?style=shield)](https://circleci.com/gh/mitsuse/kompl)
 [![Coverage Status](https://coveralls.io/repos/mitsuse/kompl/badge.png)](https://coveralls.io/r/mitsuse/kompl)
 
