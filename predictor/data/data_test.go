@@ -43,3 +43,62 @@ func TestNewCandidate(t *testing.T) {
 		return
 	}
 }
+
+func TestCandidateSeqLen(t *testing.T) {
+	seq := CandidateSeq{
+		NewCandidate("", nil, nil, 4),
+		NewCandidate("", nil, nil, 3),
+		NewCandidate("", nil, nil, 1),
+		NewCandidate("", nil, nil, 5),
+		NewCandidate("", nil, nil, 0),
+		NewCandidate("", nil, nil, 2),
+	}
+
+	if length := seq.Len(); length != len(seq) {
+		template := "\"(CandidateSeq).Len\" should return %d, but returns %d."
+		t.Errorf(template, len(seq), length)
+		return
+	}
+}
+
+func TestCandidateSeqLess(t *testing.T) {
+	seq := CandidateSeq{
+		NewCandidate("", nil, nil, 4),
+		NewCandidate("", nil, nil, 3),
+		NewCandidate("", nil, nil, 1),
+		NewCandidate("", nil, nil, 5),
+		NewCandidate("", nil, nil, 0),
+		NewCandidate("", nil, nil, 2),
+	}
+
+	if seq.Less(0, 1) {
+		message := "\"(CandidateSeq).Less\" should return false, but returns true."
+		t.Errorf(message)
+		return
+	}
+}
+
+func TestCandidateSeqSwqp(t *testing.T) {
+	seq := CandidateSeq{
+		NewCandidate("", nil, nil, 4),
+		NewCandidate("", nil, nil, 3),
+		NewCandidate("", nil, nil, 1),
+		NewCandidate("", nil, nil, 5),
+		NewCandidate("", nil, nil, 0),
+		NewCandidate("", nil, nil, 2),
+	}
+
+	seq.Swap(0, 1)
+
+	if seq[0].score != 3 {
+		template := "\"seq[%d].score\" should be %d but is %d."
+		t.Errorf(template, 0, 3, seq[0].score)
+		return
+	}
+
+	if seq[1].score != 4 {
+		template := "\"seq[%d].score\" should be %d but is %d."
+		t.Errorf(template, 1, 4, seq[1].score)
+		return
+	}
+}
