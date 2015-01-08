@@ -65,6 +65,36 @@ func TestIndexedNodeSeqLess(t *testing.T) {
 	}
 }
 
+func TestIndexedNodeSeqSwap(t *testing.T) {
+	seq := NewIndexedNodeSeq([]*Value{})
+
+	aNode := &IndexedNode{Node: trie.New()}
+	aNode.Node.Value = 10
+	seq.Append(aNode)
+
+	bNode := &IndexedNode{Node: trie.New()}
+	bNode.Node.Value = 1
+	seq.Append(bNode)
+
+	cNode := &IndexedNode{Node: trie.New()}
+	cNode.Node.Value = 4
+	seq.Append(cNode)
+
+	seq.Swap(0, 1)
+
+	if node := seq.Get(0); node != bNode {
+		template := "The first node should be %p, but is %p."
+		t.Errorf(template, bNode, node)
+		return
+	}
+
+	if node := seq.Get(1); node != aNode {
+		template := "The second node should be %p, but is %p."
+		t.Errorf(template, aNode, node)
+		return
+	}
+}
+
 func TestIndexedNodeSeqAppend(t *testing.T) {
 	seq := NewIndexedNodeSeq([]*Value{})
 
