@@ -1,10 +1,69 @@
 package data
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/mitsuse/kompl/trie"
 )
+
+func TestIndexedNodeSeqLen(t *testing.T) {
+	seq := NewIndexedNodeSeq([]*Value{})
+
+	aNode := &IndexedNode{Node: trie.New()}
+	seq.Append(aNode)
+
+	bNode := &IndexedNode{Node: trie.New()}
+	seq.Append(bNode)
+
+	cNode := &IndexedNode{Node: trie.New()}
+	seq.Append(cNode)
+
+	if length := seq.Len(); length != 3 {
+		template := "\"(*IndexedNodeSeq).Len\" should return %p, but returns %d."
+		t.Errorf(template, 3, length)
+		return
+	}
+}
+
+func TestIndexedNodeSeqLess(t *testing.T) {
+	valueSeq := []*Value{
+		&Value{Count: 0},
+		&Value{Count: 10},
+		&Value{Count: 0},
+		&Value{Count: 0},
+		&Value{Count: 40},
+		&Value{Count: 0},
+		&Value{Count: 0},
+		&Value{Count: 0},
+		&Value{Count: 0},
+		&Value{Count: 0},
+		&Value{Count: 100},
+		&Value{Count: 0},
+	}
+
+	seq := NewIndexedNodeSeq(valueSeq)
+
+	aNode := &IndexedNode{Node: trie.New()}
+	aNode.Node.Value = 10
+	seq.Append(aNode)
+
+	bNode := &IndexedNode{Node: trie.New()}
+	bNode.Node.Value = 1
+	seq.Append(bNode)
+
+	cNode := &IndexedNode{Node: trie.New()}
+	cNode.Node.Value = 4
+	seq.Append(cNode)
+
+	if seq.Less(0, 1) {
+		template := "%s shouldn't be smaller than %s."
+		first := "The value of the first node, which is %d"
+		second := "The value of the second node, which is %d"
+		t.Errorf(template, fmt.Sprintf(first, 10), fmt.Sprintf(second, 1))
+		return
+	}
+}
 
 func TestIndexedNodeSeqAppend(t *testing.T) {
 	seq := NewIndexedNodeSeq([]*Value{})
