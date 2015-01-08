@@ -38,3 +38,22 @@ func TestIndexedNodeSeqAppend(t *testing.T) {
 		}
 	}
 }
+
+func TestIndexedNodeSeqGet(t *testing.T) {
+	seq := NewIndexedNodeSeq([]*Value{})
+
+	aNode := &IndexedNode{Node: trie.New()}
+	seq.Append(aNode)
+
+	bNode := &IndexedNode{Node: trie.New()}
+	seq.Append(bNode)
+
+	cNode := &IndexedNode{Node: trie.New()}
+	seq.Append(cNode)
+
+	if node := seq.Get(1); bNode != node {
+		template := "\"(*IndexedNodeSeq).Get\" should return a node %p, but returns %p."
+		t.Errorf(template, bNode, node)
+		return
+	}
+}
