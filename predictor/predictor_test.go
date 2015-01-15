@@ -15,7 +15,7 @@ type predictTest struct {
 }
 
 func createReader() io.Reader {
-	byteSeq, _ := Asset("predictor/test/lorem.txt")
+	byteSeq, _ := Asset("predictor/test/wiki.txt")
 
 	return bytes.NewReader(byteSeq)
 }
@@ -23,10 +23,10 @@ func createReader() io.Reader {
 func createPredictTestSeq() []*predictTest {
 	testSeq := []*predictTest{
 		&predictTest{
-			Context: []string{"dolar"},
-			Prefix:  "s",
+			Context: []string{"is"},
+			Prefix:  "",
 			K:       10,
-			CandSeq: []string{"sit"},
+			CandSeq: []string{"a", "now"},
 		},
 	}
 
