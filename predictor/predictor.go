@@ -38,6 +38,10 @@ func (p *Predictor) Predict(context []string, prefix string, k int) []string {
 }
 
 func (p *Predictor) encode(context []string, prefix string) []int32 {
+	if len(context) >= p.Order() {
+		context = context[len(context)-p.Order()+1:]
+	}
+
 	key := make([]int32, 0, len(context)+len(prefix))
 
 	for _, word := range context {
