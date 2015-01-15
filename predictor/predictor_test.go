@@ -28,6 +28,48 @@ func createPredictTestSeq() []*predictTest {
 			K:       10,
 			CandSeq: []string{"a", "now"},
 		},
+
+		&predictTest{
+			Context: []string{"is"},
+			Prefix:  "",
+			K:       1,
+			CandSeq: []string{"a"},
+		},
+
+		&predictTest{
+			Context: []string{"is"},
+			Prefix:  "n",
+			K:       10,
+			CandSeq: []string{"now"},
+		},
+
+		&predictTest{
+			Context: []string{"language"},
+			Prefix:  "i",
+			K:       10,
+			CandSeq: []string{"initially"},
+		},
+
+		&predictTest{
+			Context: []string{"programming", "language"},
+			Prefix:  "",
+			K:       10,
+			CandSeq: []string{"initially"},
+		},
+
+		&predictTest{
+			Context: []string{"is", "a", "programming", "language"},
+			Prefix:  "in",
+			K:       10,
+			CandSeq: []string{"initially"},
+		},
+
+		&predictTest{
+			Context: []string{"are", "no"},
+			Prefix:  "rest",
+			K:       10,
+			CandSeq: []string{},
+		},
 	}
 
 	return testSeq
