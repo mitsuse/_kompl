@@ -2,9 +2,17 @@ package predictor
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"testing"
 )
+
+type predictTest struct {
+	Context []string
+	Prefix  string
+	K       int
+	CandSeq []string
+}
 
 func createReader() io.Reader {
 	byteSeq, _ := Asset("predictor/test/lorem.txt")
@@ -12,16 +20,55 @@ func createReader() io.Reader {
 	return bytes.NewReader(byteSeq)
 }
 
+func createPredictTestSeq() []*predictTest {
+	testSeq := []*predictTest{
+		&predictTest{
+			Context: []string{"dolar"},
+			Prefix:  "s",
+			K:       10,
+			CandSeq: []string{"sit"},
+		},
+	}
+
+	return testSeq
+}
+
 func TestPredictorBuildSucceed(t *testing.T) {
 	order := 3
 	reader := createReader()
 
-	_, err := Build(order, reader)
+	p, err := Build(order, reader)
 	if err != nil {
 		template := "Failed to build a predictor: %s"
 		t.Errorf(template, err.Error())
 		return
 	}
+
+	for _, test := range createPredictTestSeq() {
+		candSeq := p.Predict(test.Context, test.Prefix, test.K)
+		if !compareCandSeq(candSeq, test.CandSeq) {
+			descTemplate := "context = %v, prefix = %v, k = %d"
+			desc := fmt.Sprintf(descTemplate, test.Context, test.Prefix, test.K)
+
+			template := "The predictor should return %v, but %v: %s"
+			t.Errorf(template, test.CandSeq, candSeq, desc)
+			return
+		}
+	}
+}
+
+func compareCandSeq(x, y []string) bool {
+	if len(x) != len(y) {
+		return false
+	}
+
+	for i := range x {
+		if x[i] != y[i] {
+			return false
+		}
+	}
+
+	return true
 }
 
 func TestPredictorBuildFail(t *testing.T) {
