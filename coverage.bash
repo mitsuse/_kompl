@@ -6,7 +6,6 @@ base_path=${GOPATH}/src/${base_package}
 package_list=(
     ${base_package}
     ${base_package}/binary
-    ${base_package}/cmd/kompl/command
     ${base_package}/ngram
     ${base_package}/predictor
     ${base_package}/predictor/data
