@@ -1,4 +1,4 @@
-package command
+package commands
 
 const (
 	ERROR_LOADING_CORPUS      = "failed to load a corpus"

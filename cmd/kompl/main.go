@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/codegangsta/cli"
-	"github.com/mitsuse/kompl/cmd/kompl/command"
+	"github.com/mitsuse/kompl/cmd/kompl/commands"
 )
 
 func main() {
@@ -15,13 +15,13 @@ func main() {
 func initApp() *cli.App {
 	app := cli.NewApp()
 
-	app.Name = command.Name
-	app.Version = command.Version
-	app.Usage = command.Description
+	app.Name = commands.Name
+	app.Version = commands.Version
+	app.Usage = commands.Description
 
 	app.Commands = []cli.Command{
-		command.NewRunCommand(),
-		command.NewBuildCommand(),
+		commands.NewRunCommand(),
+		commands.NewBuildCommand(),
 	}
 
 	return app
