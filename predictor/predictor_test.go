@@ -15,7 +15,7 @@ type predictTest struct {
 }
 
 func createReader() io.Reader {
-	byteSeq, _ := Asset("predictor/test/wiki.txt")
+	byteSeq, _ := Asset("test/wiki.txt")
 
 	return bytes.NewReader(byteSeq)
 }
