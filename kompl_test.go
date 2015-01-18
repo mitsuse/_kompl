@@ -112,7 +112,7 @@ func TestServerGetCandidates(t *testing.T) {
 	testServer := httptest.NewServer(http.HandlerFunc(server.getCandidates))
 	defer testServer.Close()
 
-	rawParams := "context=[\"also\", \"commonly\"]&prefix=\"ref\""
+	rawParams := "context=[\"also\", \"commonly\"]&prefix=ref"
 	params, err := url.ParseQuery(rawParams)
 	if err != nil {
 		template := "Failed to parse parameters: %s"
