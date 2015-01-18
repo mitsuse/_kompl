@@ -121,7 +121,7 @@ func TestServerGetCandidates(t *testing.T) {
 	}
 
 	url := fmt.Sprintf("%s?%s", testServer.URL, params.Encode())
-	expectedSeq := []string{"reffered"}
+	expectedSeq := []string{"referred"}
 
 	response, err := http.Get(url)
 	if err != nil {
