@@ -1,9 +1,9 @@
 # Kompl
 
-[![License](https://img.shields.io/badge/license-MIT-yellowgreen.svg)][license]
-[![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg)][godoc]
+[![License](https://img.shields.io/badge/license-MIT-yellowgreen.svg?style=flat-square)][license]
+[![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)][godoc]
 [![Wercker](http://img.shields.io/wercker/ci/54e76fead9b14636630d99c6.svg?style=flat-square)][wercker]
-[![Coverage Status](https://coveralls.io/repos/mitsuse/kompl/badge.png)][coverage]
+[![Coverage Status](https://img.shields.io/coveralls/mitsuse/kompl.svg?style=flat-square)][coverage]
 
 [license]: http://opensource.org/licenses/MIT
 [godoc]: http://godoc.org/github.com/mitsuse/kompl
