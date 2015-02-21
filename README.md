@@ -1,9 +1,14 @@
 # Kompl
 
-[![License](https://img.shields.io/badge/license-MIT-yellowgreen.svg)](http://opensource.org/licenses/MIT)
-[![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg)](http://godoc.org/github.com/mitsuse/kompl)
-[![Wercker](http://img.shields.io/wercker/ci/54e76fead9b14636630d99c6.svg?style=flat-square)](https://app.wercker.com/project/bykey/1651e84f4992dc9cde16eb1433f9e648)
-[![Coverage Status](https://coveralls.io/repos/mitsuse/kompl/badge.png)](https://coveralls.io/r/mitsuse/kompl)
+[![License](https://img.shields.io/badge/license-MIT-yellowgreen.svg?style=flat-square)][license]
+[![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)][godoc]
+[![Wercker](http://img.shields.io/wercker/ci/54e76fead9b14636630d99c6.svg?style=flat-square)][wercker]
+[![Coverage](https://img.shields.io/coveralls/mitsuse/kompl.svg?style=flat-square)][coverage]
+
+[license]: http://opensource.org/licenses/MIT
+[godoc]: http://godoc.org/github.com/mitsuse/kompl
+[wercker]: https://app.wercker.com/project/bykey/1651e84f4992dc9cde16eb1433f9e648
+[coverage]: https://coveralls.io/r/mitsuse/kompl
 
 A server for K-best word completion based on N-gram frequency.
 
