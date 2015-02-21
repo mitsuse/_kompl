@@ -13,4 +13,6 @@ build:
                 bash goveralls.bash
     after-steps:
         - mitsuse/bullet-send:
-            title: "Build ${WERCKER_RESULT}."
+            title: "${WERCKER_GIT_REPOSITORY} - Build ${WERCKER_RESULT}."
+            message: "Step: ${WERCKER_FAILED_STEP_DISPLAY_NAME}"
+            path: "${WERCKER_BUILD_URL}"
