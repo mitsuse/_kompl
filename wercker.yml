@@ -13,4 +13,4 @@ build:
                 bash goveralls.bash
     after-steps:
         - mitsuse/bullet-send:
-            title: "Build finished."
+            title: "Build ${WERCKER_RESULT}."
