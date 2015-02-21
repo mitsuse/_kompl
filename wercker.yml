@@ -17,6 +17,9 @@ build:
         - tcnksm/zip:
             input: $WERCKER_OUTPUT_DIR/pkg
             output: $WERCKER_OUTPUT_DIR/dist
+    after-steps:
+        - mitsuse/bullet-send:
+            title: "Build finished."
 deploy:
     steps:
         - tcnksm/ghr:
@@ -24,3 +27,6 @@ deploy:
             input: dist
             version: v0.0.1
             replace: true
+    after-steps:
+        - mitsuse/bullet-send:
+            title: "Deploy finished."
