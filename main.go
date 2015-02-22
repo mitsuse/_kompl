@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/codegangsta/cli"
-	"github.com/mitsuse/kompl/cmd/kompl/commands"
+	"github.com/mitsuse/kompl/commands"
 )
 
 func main() {
