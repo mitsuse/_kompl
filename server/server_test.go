@@ -1,4 +1,4 @@
-package kompl
+package server
 
 import (
 	"bytes"
@@ -30,7 +30,7 @@ func TestNew(t *testing.T) {
 	}
 
 	port := "8080"
-	server := NewServer(port, p)
+	server := New(port, p)
 
 	if server.Port() != port {
 		template := "The server should use the port %s, but will use %s."
@@ -56,7 +56,7 @@ func TestServerGetDecription(t *testing.T) {
 	}
 
 	port := "8080"
-	server := NewServer(port, p)
+	server := New(port, p)
 
 	testServer := httptest.NewServer(http.HandlerFunc(server.getDescription))
 	defer testServer.Close()
@@ -107,7 +107,7 @@ func TestServerGetCandidates(t *testing.T) {
 	}
 
 	port := "8080"
-	server := NewServer(port, p)
+	server := New(port, p)
 
 	testServer := httptest.NewServer(http.HandlerFunc(server.getCandidates))
 	defer testServer.Close()

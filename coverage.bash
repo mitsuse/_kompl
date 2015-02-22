@@ -4,11 +4,11 @@ base_package=github.com/mitsuse/kompl
 base_path=${GOPATH}/src/${base_package}
 
 package_list=(
-    ${base_package}
     ${base_package}/binary
     ${base_package}/ngram
     ${base_package}/predictor
     ${base_package}/predictor/data
+    ${base_package}/server
     ${base_package}/trie
 )
 

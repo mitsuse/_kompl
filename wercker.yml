@@ -11,6 +11,12 @@ build:
             code: |
                 bash coverage.bash
                 bash goveralls.bash
+        - tcnksm/gox:
+            os: "darwin linux windows"
+            arch: "386 amd64"
+        - tcnksm/zip:
+            input: $WERCKER_OUTPUT_DIR/pkg
+            output: $WERCKER_OUTPUT_DIR/dist
     after-steps:
         - mitsuse/bullet-send:
             title: "${WERCKER_GIT_REPOSITORY} - Build ${WERCKER_RESULT}."

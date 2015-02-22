@@ -1,4 +1,4 @@
-package kompl
+package server
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ type Server struct {
 	predictor *predictor.Predictor
 }
 
-func NewServer(port string, predictor *predictor.Predictor) *Server {
+func New(port string, predictor *predictor.Predictor) *Server {
 	// TODO: Configure a server.
 	s := &Server{
 		port:      port,

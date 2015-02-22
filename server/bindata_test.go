@@ -1,4 +1,4 @@
-package kompl
+package server
 
 import (
 	"bytes"
@@ -76,7 +76,7 @@ func test_wiki_txt() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindata_file_info{name: "test/wiki.txt", size: 734, mode: os.FileMode(420), modTime: time.Unix(1421358114, 0)}
+	info := bindata_file_info{name: "test/wiki.txt", size: 734, mode: os.FileMode(420), modTime: time.Unix(1421472138, 0)}
 	a := &asset{bytes: bytes, info:  info}
 	return a, nil
 }

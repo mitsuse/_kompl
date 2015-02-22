@@ -7,8 +7,8 @@ import (
 
 func PrintError(message string, err error) {
 	if err == nil {
-		fmt.Fprintf(os.Stderr, "%s: %s\n", Name, message)
+		fmt.Fprintf(os.Stderr, "%s: %s\n", NAME, message)
 	} else {
-		fmt.Fprintf(os.Stderr, "%s: %s: %s\n", Name, message, err)
+		fmt.Fprintf(os.Stderr, "%s: %s: %s\n", NAME, message, err)
 	}
 }
