@@ -19,6 +19,9 @@ func initApp() *cli.App {
 	app.Version = commands.VERSION
 	app.Usage = commands.DESCRIPTION
 
+	app.Author = commands.AUTHOR
+	app.Email = commands.AUTHOR_EMAIL
+
 	app.Commands = []cli.Command{
 		commands.NewRunCommand(),
 		commands.NewBuildCommand(),
