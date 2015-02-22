@@ -15,9 +15,9 @@ func main() {
 func initApp() *cli.App {
 	app := cli.NewApp()
 
-	app.Name = commands.Name
-	app.Version = commands.Version
-	app.Usage = commands.Description
+	app.Name = commands.NAME
+	app.Version = commands.VERSION
+	app.Usage = commands.DESCRIPTION
 
 	app.Commands = []cli.Command{
 		commands.NewRunCommand(),
