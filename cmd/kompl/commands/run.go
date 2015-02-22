@@ -5,8 +5,8 @@ import (
 	"os"
 
 	"github.com/codegangsta/cli"
-	"github.com/mitsuse/kompl"
 	"github.com/mitsuse/kompl/predictor"
+	"github.com/mitsuse/kompl/server"
 )
 
 func NewRunCommand() cli.Command {
@@ -55,7 +55,7 @@ func runAction(context *cli.Context) {
 		return
 	}
 
-	s := kompl.NewServer(context.String("port"), p)
+	s := server.New(context.String("port"), p)
 	if err := s.Run(); err != nil {
 		PrintError(ERROR_RUNNING_SERVER, err)
 		return
