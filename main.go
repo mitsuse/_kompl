@@ -1,3 +1,7 @@
+/*
+Command "kompl" is a tool to build or run a server
+for K-best word completion based on N-gram frequency.
+*/
 package main
 
 import (
