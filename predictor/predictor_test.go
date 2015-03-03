@@ -77,13 +77,6 @@ func createPredictTestSeq() []*predictTest {
 			K:       10,
 			CandSeq: []string{},
 		},
-
-		&predictTest{
-			Context: []string{"ABCDEFG"},
-			Prefix:  "",
-			K:       10,
-			CandSeq: []string{},
-		},
 	}
 
 	return testSeq

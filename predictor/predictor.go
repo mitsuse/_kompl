@@ -26,7 +26,7 @@ func (p *Predictor) Predict(context []string, prefix string, k int) []string {
 
 	contextKey := p.encode(context, prefix)
 
-	for start := 0; start < len(context); start++ {
+	for start := 0; start <= len(context); start++ {
 		prefixNode, exist := p.ngramTrie.Get(contextKey[start:])
 		if !exist {
 			continue
