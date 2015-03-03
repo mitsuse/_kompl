@@ -70,6 +70,13 @@ func createPredictTestSeq() []*predictTest {
 			K:       10,
 			CandSeq: []string{},
 		},
+
+		&predictTest{
+			Context: []string{},
+			Prefix:  " ",
+			K:       10,
+			CandSeq: []string{},
+		},
 	}
 
 	return testSeq
