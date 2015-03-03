@@ -5,6 +5,10 @@ import (
 	"github.com/mitsuse/kompl/trie"
 )
 
+const (
+	_UNKNOWN_SYMBOL = -2
+)
+
 type Predictor struct {
 	order     int
 	wordSize  int
@@ -22,7 +26,7 @@ func (p *Predictor) Predict(context []string, prefix string, k int) []string {
 
 	contextKey := p.encode(context, prefix)
 
-	for start := 0; start < len(contextKey); start++ {
+	for start := 0; start <= len(context); start++ {
 		prefixNode, exist := p.ngramTrie.Get(contextKey[start:])
 		if !exist {
 			continue
@@ -47,7 +51,7 @@ func (p *Predictor) encode(context []string, prefix string) []int32 {
 	for _, word := range context {
 		node, exist := p.wordTrie.Get([]int32(word))
 		if !exist {
-			key = append(key, 0)
+			key = append(key, _UNKNOWN_SYMBOL)
 		} else {
 			key = append(key, int32(node.Value))
 		}
