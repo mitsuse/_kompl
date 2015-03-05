@@ -25,6 +25,15 @@ To build a *predictor* file, execute the following command:
 $ kompl build -p <the path to the output predictor file> -n <the order of N-gram> -c <the path to a raw text file>
 ```
 
+### Run a server for completion
+
+Kompl is a server for K-best word completion.
+To run the server, execute the following command:
+
+```bash
+$ kompl run -n <the port number> -p <the path to the predictor file>
+```
+
 ## TODO
 
 - Write test codes more.
