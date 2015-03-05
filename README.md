@@ -12,6 +12,19 @@
 
 A server for K-best word completion based on N-gram frequency.
 
+## Usage
+
+### Build a predictor
+
+Kompl requires a *predictor* file for word completion.
+The file is built from a raw text file like [this](test/wiki.txt).
+
+To build a *predictor* file, execute the following command:
+
+```bash
+$ kompl build -p <the path to the output predictor file> -n <the order of N-gram> -c <the path to a raw text file>
+```
+
 ## TODO
 
 - Write test codes more.
