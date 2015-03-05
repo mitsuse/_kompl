@@ -34,6 +34,12 @@ To run the server, execute the following command:
 $ kompl run -n <the port number> -p <the path to the predictor file>
 ```
 
+## Installation
+
+The executable binaries are downloadable from the [release page][release page].
+
+[release page]: https://github.com/mitsuse/kompl/releases
+
 ## TODO
 
 - Write test codes more.
