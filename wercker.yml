@@ -21,3 +21,14 @@ build:
         - mitsuse/bullet-send:
             title: "${WERCKER_GIT_REPOSITORY} - Build ${WERCKER_RESULT}."
             path: "${WERCKER_BUILD_URL}"
+deploy:
+    steps:
+        - tcnksm/ghr:
+            token: $GITHUB_TOKEN
+            input: dist
+            version: v0.0.1
+            replace: true
+    after-steps:
+        - mitsuse/bullet-send:
+            title: "${WERCKER_GIT_REPOSITORY} - Deploy ${WERCKER_RESULT}."
+            path: "${WERCKER_DEPLOY_URL}"
