@@ -14,9 +14,10 @@ A server for K-best word completion based on N-gram frequency.
 
 ## TODO
 
-- Refactor and write test codes
+- Write test codes more.
 - Implement tokenizer for Engish.
 - Use a space and time efficient implementation of trie.
+- Fall back into lower-order N-grams appropriately.
 
 ## License
 
