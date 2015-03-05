@@ -12,11 +12,40 @@
 
 A server for K-best word completion based on N-gram frequency.
 
+## Usage
+
+### Build a predictor
+
+Kompl requires a *predictor* file for word completion.
+The file is built from a raw text file like [this](test/wiki.txt) by counting N-grams.
+
+To build a *predictor* file, execute the following command:
+
+```bash
+$ kompl build -p <the path to the output predictor file> -n <the order of N-gram> -c <the path to a raw text file>
+```
+
+### Run a server for completion
+
+Kompl is a server for K-best word completion.
+To run the server, execute the following command:
+
+```bash
+$ kompl run -n <the port number> -p <the path to the predictor file>
+```
+
+## Installation
+
+The executable binaries are downloadable from the [release page][release page].
+
+[release page]: https://github.com/mitsuse/kompl/releases
+
 ## TODO
 
-- Refactor and write test codes
+- Write test codes more.
 - Implement tokenizer for Engish.
 - Use a space and time efficient implementation of trie.
+- Fall back into lower-order N-grams appropriately.
 
 ## License
 
