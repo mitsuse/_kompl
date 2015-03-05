@@ -112,15 +112,10 @@ func TestServerGetCandidates(t *testing.T) {
 	testServer := httptest.NewServer(http.HandlerFunc(server.getCandidates))
 	defer testServer.Close()
 
-	rawParams := "context=[\"also\", \"commonly\"]&prefix=ref"
-	params, err := url.ParseQuery(rawParams)
-	if err != nil {
-		template := "Failed to parse parameters: %s"
-		t.Errorf(template, rawParams)
-		return
-	}
+	v := url.Values{}
+	v.Add("state", `{"context": ["also", "commonly"], "prefix": "ref", "k": 10}`)
 
-	url := fmt.Sprintf("%s?%s", testServer.URL, params.Encode())
+	url := fmt.Sprintf("%s?%s", testServer.URL, v.Encode())
 	expectedSeq := []string{"referred"}
 
 	response, err := http.Get(url)
