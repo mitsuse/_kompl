@@ -10,6 +10,7 @@ const (
 	_EN_DOT_PATTERN    = `([^A-Z\.])\.`
 	_EN_START_PATTERN  = `^\s+`
 	_EN_END_PATTERN    = `\s+$`
+	_EN_SPACE_PATTERN  = `\s+`
 )
 
 type EnglishTokenizer struct {
@@ -17,6 +18,7 @@ type EnglishTokenizer struct {
 	dotRegexp    *regexp.Regexp
 	startRegexp  *regexp.Regexp
 	endRegexp    *regexp.Regexp
+	spaceRegexp  *regexp.Regexp
 }
 
 func NewEnglishTokenizer() *EnglishTokenizer {
@@ -25,6 +27,7 @@ func NewEnglishTokenizer() *EnglishTokenizer {
 		dotRegexp:    regexp.MustCompile(_EN_DOT_PATTERN),
 		startRegexp:  regexp.MustCompile(_EN_START_PATTERN),
 		endRegexp:    regexp.MustCompile(_EN_END_PATTERN),
+		spaceRegexp:  regexp.MustCompile(_EN_SPACE_PATTERN),
 	}
 
 	return t
@@ -35,6 +38,7 @@ func (t *EnglishTokenizer) Tokenize(s string) []string {
 	cs = t.dotRegexp.ReplaceAllString(cs, "$1 .")
 	cs = t.startRegexp.ReplaceAllString(cs, "")
 	cs = t.endRegexp.ReplaceAllString(cs, "")
+	cs = t.spaceRegexp.ReplaceAllString(cs, " ")
 
 	return strings.Split(cs, " ")
 }
