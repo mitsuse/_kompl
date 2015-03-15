@@ -26,7 +26,7 @@ deploy:
         - tcnksm/ghr:
             token: $GITHUB_TOKEN
             input: dist
-            version: v0.0.1
+            version: v0.0.2
             replace: true
     after-steps:
         - mitsuse/bullet-send:
