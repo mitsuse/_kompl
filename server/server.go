@@ -10,11 +10,13 @@ import (
 	"net/http"
 
 	"github.com/mitsuse/kompl/predictor"
+	"github.com/mitsuse/kompl/tokenizer"
 )
 
 type Server struct {
 	port      string
 	predictor *predictor.Predictor
+	tokenizer tokenizer.Tokenizer
 }
 
 /*
@@ -27,6 +29,7 @@ func New(port string, predictor *predictor.Predictor) *Server {
 	s := &Server{
 		port:      port,
 		predictor: predictor,
+		tokenizer: tokenizer.NewEnglishTokenizer(),
 	}
 
 	return s
@@ -44,6 +47,13 @@ Return the the K-best word predictor.
 */
 func (s *Server) Predictor() *predictor.Predictor {
 	return s.predictor
+}
+
+/*
+Return the tokenizer used by the kompl server.
+*/
+func (s *Server) Tokenizer() tokenizer.Tokenizer {
+	return s.tokenizer
 }
 
 /*

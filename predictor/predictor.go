@@ -22,23 +22,52 @@ func (p *Predictor) Order() int {
 }
 
 func (p *Predictor) Predict(context []string, prefix string, k int) []string {
-	candSeq := []string{}
+	candidateSet := make(map[string]struct{})
+	candidateSeq := make([]string, 0, k)
 
 	contextKey := p.encode(context, prefix)
-
-	for start := 0; start <= len(context); start++ {
+	for start := 0; start <= len(context) && len(candidateSeq) < k; start++ {
 		prefixNode, exist := p.ngramTrie.Get(contextKey[start:])
 		if !exist {
 			continue
 		}
 
-		candSeq = p.generateCandidates(prefix, prefixNode, k)
-		if len(candSeq) > 0 {
-			break
+		queue := data.NewQueue()
+
+		value := p.valueSeq[prefixNode.Value]
+		candidate := data.NewCandidate(prefix, prefixNode, nil, value.Count)
+		queue.Push(candidate)
+
+		for queue.Len() > 0 {
+			candidate, _ := queue.Pop()
+
+			if first, exist := p.getFirst(candidate); exist {
+				queue.Push(first)
+			}
+
+			if sibling, exist := p.getSibgling(candidate); exist {
+				queue.Push(sibling)
+			}
+
+			candidateValue := p.valueSeq[candidate.Node().Value-1]
+			if candidateValue.Count > 0 {
+				word := candidate.Word()
+
+				_, exist := candidateSet[word]
+				if exist {
+					continue
+				}
+				candidateSet[word] = struct{}{}
+
+				candidateSeq = append(candidateSeq, word)
+				if len(candidateSeq) == k {
+					break
+				}
+			}
 		}
 	}
 
-	return candSeq
+	return candidateSeq
 }
 
 func (p *Predictor) encode(context []string, prefix string) []int32 {
@@ -64,38 +93,6 @@ func (p *Predictor) encode(context []string, prefix string) []int32 {
 	}
 
 	return key
-}
-
-func (p *Predictor) generateCandidates(prefix string, node *trie.Trie, k int) []string {
-	candidateSeq := make([]string, 0, k)
-
-	queue := data.NewQueue()
-
-	value := p.valueSeq[node.Value]
-	candidate := data.NewCandidate(prefix, node, nil, value.Count)
-	queue.Push(candidate)
-
-	for queue.Len() > 0 {
-		candidate, _ := queue.Pop()
-
-		candidateValue := p.valueSeq[candidate.Node().Value-1]
-		if candidateValue.Count > 0 {
-			candidateSeq = append(candidateSeq, candidate.Word())
-			if len(candidateSeq) == k {
-				break
-			}
-		}
-
-		if first, exist := p.getFirst(candidate); exist {
-			queue.Push(first)
-		}
-
-		if sibling, exist := p.getSibgling(candidate); exist {
-			queue.Push(sibling)
-		}
-	}
-
-	return candidateSeq
 }
 
 func (p *Predictor) getFirst(candidate *data.Candidate) (*data.Candidate, bool) {

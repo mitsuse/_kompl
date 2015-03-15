@@ -6,6 +6,9 @@ import (
 	"strings"
 )
 
+/*
+This request handler returns the cmpletion canidates for the given context and prefix.
+*/
 func (s *Server) getCandidates(writer http.ResponseWriter, requst *http.Request) {
 	header := writer.Header()
 	header.Set("Content-Type", "application/json")
@@ -19,7 +22,21 @@ func (s *Server) getCandidates(writer http.ResponseWriter, requst *http.Request)
 		return
 	}
 
-	candSeq := s.Predictor().Predict(state.Context, state.Prefix, state.K)
+	order := s.Predictor().Order()
+	context := make([]string, 0, order)
+	tokenSeq := s.Tokenizer().Tokenize(state.Context)
+
+	emptySize := -1 * (len(tokenSeq) - order + 1)
+	for i := 0; i < emptySize; i++ {
+		context = append(context, "")
+	}
+
+	tokenIndex := len(tokenSeq) - order + len(context) + 1
+	for i := tokenIndex; len(context) < order-1; i++ {
+		context = append(context, tokenSeq[i])
+	}
+
+	candSeq := s.Predictor().Predict(context, state.Prefix, state.K)
 
 	encoder := json.NewEncoder(writer)
 	encoder.Encode(candSeq)
@@ -37,7 +54,7 @@ func (s *Server) getDescription(writer http.ResponseWriter, requst *http.Request
 }
 
 type State struct {
-	Context []string `json:"context"`
-	Prefix  string   `json:"prefix"`
-	K       int      `json:"k"`
+	Context string `json:"context"`
+	Prefix  string `json:"prefix"`
+	K       int    `json:"k"`
 }

@@ -9,6 +9,8 @@ package_list=(
     ${base_package}/predictor
     ${base_package}/predictor/data
     ${base_package}/server
+    ${base_package}/sentencizer
+    ${base_package}/tokenizer
     ${base_package}/trie
 )
 

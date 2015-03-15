@@ -24,7 +24,7 @@ type IterateTest struct {
 func TestIteratorIterateSucceed(t *testing.T) {
 	test := &IterateTest{
 		Order: 3,
-		Data:  "'    a(bbb ccc  ddd\n; eee",
+		Data:  "' a ( bbb ccc ddd\n; eee",
 		NgramSeq: [][]string{
 			[]string{"", "", "'"},
 			[]string{"", "'", "a"},
@@ -32,8 +32,8 @@ func TestIteratorIterateSucceed(t *testing.T) {
 			[]string{"a", "(", "bbb"},
 			[]string{"(", "bbb", "ccc"},
 			[]string{"bbb", "ccc", "ddd"},
-			[]string{"ccc", "ddd", ";"},
-			[]string{"ddd", ";", "eee"},
+			[]string{"", "", ";"},
+			[]string{"", ";", "eee"},
 		},
 	}
 

@@ -30,8 +30,8 @@ func NewBuildCommand() cli.Command {
 
 			cli.StringFlag{
 				Name:  "corpus,c",
-				Value: "corpus.raw",
-				Usage: "The input path of a raw corpus.",
+				Value: "corpus.tokenized",
+				Usage: "The input path of a tokenized corpus.",
 			},
 		},
 	}
