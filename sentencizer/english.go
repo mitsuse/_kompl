@@ -39,5 +39,5 @@ func (s *EnglishSentencizer) Sentencize(tokenSeq []string) [][]string {
 
 	sentenceSeq = append(sentenceSeq, sentence)
 
-	return SentenceSeq
+	return sentenceSeq
 }
