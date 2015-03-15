@@ -17,7 +17,6 @@ const (
 	AUTHOR_EMAIL = "tomoya@mitsuse.jp"
 
 	BLANK_PATTERN  = `^\s*$`
-	TAG_PATTERN    = `^<.*>$`
 	SYMBOL_PATTERN = `([~!@#\$%\^&\*\(\)\-_\+=\[\]\{\}\|\\;:"',<>\/\?])`
 	DOT_PATTERN    = `([^A-Z\.])\.`
 	SPACE_PATTERN  = `\s+`
@@ -28,7 +27,6 @@ const (
 
 var (
 	blankRegexp  *regexp.Regexp
-	tagRegexp    *regexp.Regexp
 	symbolRegexp *regexp.Regexp
 	dotRegexp    *regexp.Regexp
 	spaceRegexp  *regexp.Regexp
@@ -39,7 +37,6 @@ var (
 
 func init() {
 	blankRegexp = regexp.MustCompile(BLANK_PATTERN)
-	tagRegexp = regexp.MustCompile(TAG_PATTERN)
 	symbolRegexp = regexp.MustCompile(SYMBOL_PATTERN)
 	spaceRegexp = regexp.MustCompile(SPACE_PATTERN)
 	dotRegexp = regexp.MustCompile(DOT_PATTERN)
@@ -106,7 +103,7 @@ func preproc(ctx *cli.Context) {
 }
 
 func printProcessed(s string) error {
-	if blankRegexp.MatchString(s) || tagRegexp.MatchString(s) {
+	if blankRegexp.MatchString(s) {
 		return nil
 	}
 
