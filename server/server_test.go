@@ -96,7 +96,7 @@ func TestServerGetDecription(t *testing.T) {
 	}
 }
 
-func TestServerGetCandidatesByTokens(t *testing.T) {
+func TestServerGetCandidates(t *testing.T) {
 	order := 3
 
 	p, err := predictor.Build(order, createReader())
@@ -113,72 +113,7 @@ func TestServerGetCandidatesByTokens(t *testing.T) {
 	defer testServer.Close()
 
 	v := url.Values{}
-	v.Add(
-		"state",
-		`{"context": {"tokens": ["also", "commonly"]}, "prefix": "ref", "k": 10}`,
-	)
-
-	url := fmt.Sprintf("%s?%s", testServer.URL, v.Encode())
-	expectedSeq := []string{"referred"}
-
-	response, err := http.Get(url)
-	if err != nil {
-		template := "Failed to get: %s"
-		t.Errorf(template, err.Error())
-		return
-	}
-
-	if response.StatusCode != 200 {
-		template := "Failed to get: status = %03d"
-		t.Errorf(template, response.StatusCode)
-		return
-	}
-
-	candidateSeq := []string{}
-
-	decoder := json.NewDecoder(response.Body)
-	if err := decoder.Decode(&candidateSeq); err != nil {
-		template := "Failed to read the body: %s"
-		t.Errorf(template, err.Error())
-		return
-	}
-
-	if len(expectedSeq) != len(candidateSeq) {
-		template := "The size of candidates should be %d, but is %d."
-		t.Errorf(template, len(expectedSeq), len(candidateSeq))
-		return
-	}
-
-	for i := range expectedSeq {
-		if expectedSeq[i] != candidateSeq[i] {
-			template := "The canidate should be %s, but is %s."
-			t.Errorf(template, expectedSeq[i], candidateSeq[i])
-			return
-		}
-	}
-}
-
-func TestServerGetCandidatesByChars(t *testing.T) {
-	order := 3
-
-	p, err := predictor.Build(order, createReader())
-	if err != nil {
-		template := "Failed to build a predictor: %s"
-		t.Errorf(template, err.Error())
-		return
-	}
-
-	port := "8080"
-	server := New(port, p)
-
-	testServer := httptest.NewServer(http.HandlerFunc(server.getCandidates))
-	defer testServer.Close()
-
-	v := url.Values{}
-	v.Add(
-		"state",
-		`{"context": {"chars": "also commonly"}, "prefix": "ref", "k": 10}`,
-	)
+	v.Add("state", `{"context": "also commonly", "prefix": "ref", "k": 10}`)
 
 	url := fmt.Sprintf("%s?%s", testServer.URL, v.Encode())
 	expectedSeq := []string{"referred"}
