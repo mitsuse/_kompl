@@ -19,7 +19,26 @@ func (s *Server) getCandidates(writer http.ResponseWriter, requst *http.Request)
 		return
 	}
 
-	candSeq := s.Predictor().Predict(state.Context, state.Prefix, state.K)
+	var context []string
+	if len(state.Context.Tokens) == 0 {
+		order := s.Predictor().Order()
+		context = make([]string, 0, order)
+		tokenSeq := s.Tokenizer().Tokenize(state.Context.Chars)
+
+		emptySize := -1 * (len(tokenSeq) - order + 1)
+		for i := 0; i < emptySize; i++ {
+			context = append(context, "")
+		}
+
+		tokenIndex := len(tokenSeq) - order + len(context) + 1
+		for i := tokenIndex; len(context) < order-1; i++ {
+			context = append(context, tokenSeq[i])
+		}
+	} else {
+		context = state.Context.Tokens
+	}
+
+	candSeq := s.Predictor().Predict(context, state.Prefix, state.K)
 
 	encoder := json.NewEncoder(writer)
 	encoder.Encode(candSeq)
@@ -37,7 +56,12 @@ func (s *Server) getDescription(writer http.ResponseWriter, requst *http.Request
 }
 
 type State struct {
-	Context []string `json:"context"`
+	Context *Context `json:"context"`
 	Prefix  string   `json:"prefix"`
 	K       int      `json:"k"`
+}
+
+type Context struct {
+	Tokens []string `json:"tokens"`
+	Chars  string   `json:"chars"`
 }
