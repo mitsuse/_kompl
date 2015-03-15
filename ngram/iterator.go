@@ -60,7 +60,12 @@ func (iter *Iterator) Iterate() bool {
 
 		reader := strings.NewReader(iter.lineScanner.Text())
 		iter.wordScanner = bufio.NewScanner(reader)
-		iter.wordScanner.Split(ScanTokens)
+		iter.wordScanner.Split(bufio.ScanWords)
+
+		iter.wordSeq = make([]string, iter.order)
+		for i := 0; i < len(iter.wordSeq); i++ {
+			iter.wordSeq[i] = ""
+		}
 	}
 
 	return hasNext

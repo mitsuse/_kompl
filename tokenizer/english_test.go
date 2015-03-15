@@ -95,7 +95,7 @@ func TestEnglishTokenizerTokenize(t *testing.T) {
 		for i := 0; i < len(tokenSeq); i++ {
 			if tokenSeq[i] != test.TokenSeq[i] {
 				template := "Expected: %v\nResult: %v"
-				t.Errorf(template, tokenSeq, test.TokenSeq)
+				t.Errorf(template, test.TokenSeq, tokenSeq)
 				return
 			}
 		}
