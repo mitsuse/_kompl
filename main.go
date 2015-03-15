@@ -29,6 +29,7 @@ func initApp() *cli.App {
 	app.Commands = []cli.Command{
 		commands.NewRunCommand(),
 		commands.NewBuildCommand(),
+		commands.NewPreprocCommand(),
 	}
 
 	return app
