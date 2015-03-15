@@ -37,7 +37,9 @@ func (s *EnglishSentencizer) Sentencize(tokenSeq []string) [][]string {
 		}
 	}
 
-	sentenceSeq = append(sentenceSeq, sentence)
+	if len(sentence) > 0 {
+		sentenceSeq = append(sentenceSeq, sentence)
+	}
 
 	return sentenceSeq
 }
