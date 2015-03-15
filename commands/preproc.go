@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/codegangsta/cli"
@@ -19,6 +20,16 @@ func NewPreprocCommand() cli.Command {
 		Action:    preproc,
 
 		Flags: []cli.Flag{
+			cli.BoolFlag{
+				Name:  "ignore-blank,b",
+				Usage: "Ignore blank lines.",
+			},
+
+			cli.BoolFlag{
+				Name:  "ignore-xml,x",
+				Usage: "Ignore xml tags.",
+			},
+
 			cli.StringFlag{
 				Name:  "corpus,c",
 				Value: "corpus.raw",
@@ -54,9 +65,22 @@ func preproc(ctx *cli.Context) {
 	}
 	defer tokenizedFile.Close()
 
+	ignoreBlank := ctx.Bool("ignore-blank")
+	ignoreXml := ctx.Bool("ignore-xml")
+
+	xmlPattern := regexp.MustCompile(`^<.*>$`)
+
 	scanner := bufio.NewScanner(corpusFile)
 	for scanner.Scan() {
 		line := scanner.Text()
+
+		if ignoreBlank && len(line) == 0 {
+			continue
+		}
+
+		if ignoreXml && xmlPattern.MatchString(line) {
+			continue
+		}
 
 		sentenceSeq := s.Sentencize(t.Tokenize(line))
 		for _, tokenSeq := range sentenceSeq {
