@@ -21,16 +21,17 @@ func (s *Server) getCandidates(writer http.ResponseWriter, requst *http.Request)
 
 	var context []string
 	if len(state.Context.Tokens) == 0 {
-		context = make([]string, 0, state.K)
+		order := s.Predictor().Order()
+		context = make([]string, 0, order)
 		tokenSeq := s.Tokenizer().Tokenize(state.Context.Chars)
 
-		emptySize := -1 * (len(tokenSeq) - state.K)
+		emptySize := -1 * (len(tokenSeq) - order + 1)
 		for i := 0; i < emptySize; i++ {
 			context = append(context, "")
 		}
 
-		tokenIndex := len(tokenSeq) + state.K - len(context) - 1
-		for i := tokenIndex; len(context) < state.K; i++ {
+		tokenIndex := len(tokenSeq) - order + len(context) + 1
+		for i := tokenIndex; len(context) < order-1; i++ {
 			context = append(context, tokenSeq[i])
 		}
 	} else {

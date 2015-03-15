@@ -113,7 +113,10 @@ func TestServerGetCandidates(t *testing.T) {
 	defer testServer.Close()
 
 	v := url.Values{}
-	v.Add("state", `{"context": ["also", "commonly"], "prefix": "ref", "k": 10}`)
+	v.Add(
+		"state",
+		`{"context": {"tokens": ["also", "commonly"]}, "prefix": "ref", "k": 10}`,
+	)
 
 	url := fmt.Sprintf("%s?%s", testServer.URL, v.Encode())
 	expectedSeq := []string{"referred"}
