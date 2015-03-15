@@ -4,5 +4,5 @@ Package "sentencizer" provides the interface for sentencizers and several implem
 package sentencizer
 
 type Sentencizer interface {
-	sentencize(tokenSeq []string) [][]string
+	Sentencize(tokenSeq []string) [][]string
 }
