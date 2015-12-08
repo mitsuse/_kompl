@@ -4,7 +4,10 @@
 
 [license]: http://opensource.org/licenses/MIT
 
-(deprecated) A server for K-best word completion based on N-gram frequency.
+**This repository is deprecated.
+I'm reimplementing [the new version](https://github.com/mitsuse/kompl).**
+
+A server for K-best word completion based on N-gram frequency.
 
 ## Usage
 
